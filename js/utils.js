@@ -1,5 +1,6 @@
 /* ─── FILTER / SORT OPTIONS ─── */
-// ALL_CATS is defined in theme.js and available globally
+const ALL_CATS = ['All', 'Faith', 'Abundance', 'Mindset', 'Love'];
+
 const SORT_OPTS = [
   { id: 'date',  label: 'Date Added' },
   { id: 'alpha', label: 'A–Z' },
