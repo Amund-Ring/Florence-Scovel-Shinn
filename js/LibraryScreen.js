@@ -1,3 +1,11 @@
+/* ─── ADJUSTABLE SIZES ─────────────────────────────────────────────────────
+   Change these values to resize UI elements without digging through styles.   */
+const HEART_SIZE    = 14;   // px — heart icon in Library/Favorites rows
+const CHIP_LABEL    = 9;   // px — "CATEGORY" / "SORT BY" section header text
+const CHIP_FONT     = 12;   // px — filter chip button text (All, Faith, A–Z…)
+const CHIP_PAD      = '5px 13px';  // vertical horizontal — filter chip padding
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 /* ─── FILTER / SORT CONTROLS ─── */
 function ControlsBtn({ onClick, active }) {
   const t = useTheme();
@@ -23,13 +31,13 @@ function ScrollChipRow({ label, options, active, onSelect }) {
   const t = useTheme();
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-      <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: t.textSecondary, padding: '10px 16px 5px', fontFamily: "'DM Sans', sans-serif" }}>{label}</span>
+      <span style={{ fontSize: CHIP_LABEL, fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase', color: t.textSecondary, padding: '10px 16px 5px', fontFamily: "'DM Sans', sans-serif" }}>{label}</span>
       <div style={{ display: 'flex', gap: 6, overflowX: 'auto', padding: '0 16px 10px', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
         {options.map(opt => (
           <button key={opt.id} onClick={() => onSelect(opt.id)} style={{
             fontFamily: "'DM Sans', sans-serif",
-            fontSize: 12, fontWeight: active === opt.id ? 600 : 400,
-            padding: '4px 12px', borderRadius: 20, flexShrink: 0,
+            fontSize: CHIP_FONT, fontWeight: active === opt.id ? 600 : 400,
+            padding: CHIP_PAD, borderRadius: 20, flexShrink: 0,
             border: active === opt.id ? 'none' : `1px solid ${t.btnBorder}`,
             background: active === opt.id ? t.btnActiveBg : t.bgCard,
             color: active === opt.id ? (t.dark ? t.bg : '#fff') : t.textSecondary,
@@ -76,12 +84,12 @@ function LibraryItem({ quote, todayQuotes, onFavorite, onTap, onSetToday, isLast
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0, paddingTop: 2 }} onClick={e => e.stopPropagation()}>
         <button onClick={onFavorite} style={{
           width: 30, height: 30, borderRadius: 8,
-          border: `1px solid ${quote.is_favorite ? 'oklch(70% 0.12 20)' : t.btnBorder}`,
-          background: quote.is_favorite ? 'oklch(96% 0.04 20)' : t.bgCard,
-          color: quote.is_favorite ? 'oklch(55% 0.14 20)' : t.textSecondary,
+          border: `1px solid ${quote.is_favorite ? 'oklch(62% 0.14 20)' : t.btnBorder}`,
+          background: quote.is_favorite ? (t.dark ? `color-mix(in oklch, oklch(58% 0.14 20) 14%, ${t.bgCard})` : 'oklch(96% 0.04 20)') : t.bgCard,
+          color: quote.is_favorite ? 'oklch(62% 0.14 20)' : t.textSecondary,
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
           transition: 'all 0.15s',
-        }}><IconHeart filled={quote.is_favorite} /></button>
+        }}><IconHeart filled={quote.is_favorite} size={HEART_SIZE} /></button>
         <button onClick={onSetToday} title="Add to Today" style={{
           width: 30, height: 30, borderRadius: 8,
           border: `1px solid ${t.btnBorder}`,
