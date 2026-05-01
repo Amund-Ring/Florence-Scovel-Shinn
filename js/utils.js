@@ -1,12 +1,44 @@
 /* ─── FILTER / SORT OPTIONS ─── */
 const ALL_CATS = ['All', 'Faith', 'Abundance', 'Mindset', 'Love'];
 
-const SORT_OPTS = [
+// Library uses "Order in Book" because JSON order = book order
+const SORT_OPTS_LIBRARY = [
+  { id: 'date',  label: 'Order in Book' },
+  { id: 'alpha', label: 'A–Z' },
+  { id: 'cat',   label: 'By Category' },
+];
+
+// Favorites uses "Date Added" because order = when the user saved it
+const SORT_OPTS_FAVORITES = [
   { id: 'date',  label: 'Date Added' },
   { id: 'alpha', label: 'A–Z' },
   { id: 'cat',   label: 'By Category' },
 ];
+
 const CAT_OPTS = ALL_CATS.map(c => ({ id: c, label: c }));
+
+/* ─── PERSISTENCE HOOK ─── */
+// Drop-in replacement for React.useState that reads/writes localStorage.
+function usePersisted(key, defaultValue) {
+  const [value, setValue] = React.useState(function() {
+    try {
+      const item = localStorage.getItem(key);
+      return item !== null ? JSON.parse(item) : defaultValue;
+    } catch(e) {
+      return defaultValue;
+    }
+  });
+
+  function set(next) {
+    setValue(function(prev) {
+      const newVal = typeof next === 'function' ? next(prev) : next;
+      try { localStorage.setItem(key, JSON.stringify(newVal)); } catch(e) {}
+      return newVal;
+    });
+  }
+
+  return [value, set];
+}
 
 /* ─── WEIGHTED RANDOM QUOTE PICKER ─── */
 // Quotes shown less often are more likely to be picked.

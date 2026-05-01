@@ -1,41 +1,51 @@
 /* ─── ROOT APP ─── */
 function App() {
-  const [quotes, setQuotes]       = React.useState([]);
-  const [loading, setLoading]     = React.useState(true);
-  const [todaySlots, setTodaySlots] = React.useState([]);
-  const [tab, setTab]             = React.useState('today');
-  const [focusMode, setFocusMode] = React.useState(null);
+  const [quotes, setQuotes]         = usePersisted('fss_quotes', []);
+  const [todaySlots, setTodaySlots] = usePersisted('fss_today', []);
+  const [darkMode, setDarkMode]     = usePersisted('fss_dark', false);
+
+  const [tab, setTab]               = React.useState('today');
+  const [focusMode, setFocusMode]   = React.useState(null);
   const [slotPicker, setSlotPicker] = React.useState(null);
-  const [darkMode, setDarkMode]   = React.useState(false);
-  const [isMobile, setIsMobile]   = React.useState(window.innerWidth <= 600);
+  const [isMobile, setIsMobile]     = React.useState(window.innerWidth <= 600);
+
+  // Still loading only if we have no quotes yet (first visit)
+  const [loading, setLoading] = React.useState(quotes.length === 0);
 
   const activeTheme = darkMode ? THEMES.night : THEMES.ivory;
 
-  // Load quotes from quotes.json and pick 3 random ones for today
+  // First visit: fetch quotes.json and pick today's slots.
+  // Subsequent visits: localStorage already has everything, skip fetch.
   React.useEffect(() => {
+    if (quotes.length > 0 && todaySlots.length > 0) {
+      setLoading(false);
+      return;
+    }
     fetch('./quotes.json')
       .then(r => r.json())
       .then(data => {
         const qs = data.quotes;
         setQuotes(qs);
-        const s1 = pickQuote(qs, []);
-        const s2 = pickQuote(qs, [s1.id]);
-        const s3 = pickQuote(qs, [s1.id, s2.id]);
-        setTodaySlots([
-          { id: s1.id, locked: false },
-          { id: s2.id, locked: false },
-          { id: s3.id, locked: false },
-        ]);
+        if (todaySlots.length === 0) {
+          const s1 = pickQuote(qs, []);
+          const s2 = pickQuote(qs, [s1.id]);
+          const s3 = pickQuote(qs, [s1.id, s2.id]);
+          setTodaySlots([
+            { id: s1.id, locked: false },
+            { id: s2.id, locked: false },
+            { id: s3.id, locked: false },
+          ]);
+        }
         setLoading(false);
       });
   }, []);
 
-  // Sync body background with theme on mobile
+  // Sync body background colour with theme on mobile
   React.useEffect(() => {
     document.body.style.background = isMobile ? activeTheme.bg : '#1c1917';
   }, [isMobile, activeTheme]);
 
-  // Respond to window resize for mobile/desktop switch
+  // Respond to viewport resize
   React.useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth <= 600);
     window.addEventListener('resize', handler);
@@ -78,7 +88,7 @@ function App() {
     setSlotPicker(null);
   };
 
-  /* ── Focus mode helpers ── */
+  /* ── Focus mode ── */
   const openTodayFocus = (startIdx) => {
     const todayFull = todaySlots.map(tq => quotes.find(q => q.id === tq.id)).filter(Boolean);
     setFocusMode({ quotes: todayFull, startIdx });

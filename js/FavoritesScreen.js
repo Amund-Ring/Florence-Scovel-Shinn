@@ -2,8 +2,8 @@
 function FavoritesScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday }) {
   const t = useTheme();
   const S = makeS(t);
-  const [sort, setSort]               = React.useState('date');
-  const [activeCat, setActiveCat]     = React.useState('All');
+  const [sort, setSort]               = usePersisted('fss_fav_sort', 'date');
+  const [activeCat, setActiveCat]     = usePersisted('fss_fav_cat', 'All');
   const [showControls, setShowControls] = React.useState(false);
 
   const favs = allQuotes.filter(q => q.is_favorite);
@@ -11,17 +11,19 @@ function FavoritesScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetTod
   const displayed = activeCat === 'All' ? favs : favs.filter(q => q.category === activeCat);
   const sorted = sortQuotes(displayed, sort, allQuotes);
 
-  // When sort === 'cat', group by category
   const grouped = sort === 'cat'
     ? Object.entries(sorted.reduce((acc, q) => { (acc[q.category] = acc[q.category] || []).push(q); return acc; }, {}))
     : null;
 
   if (favs.length === 0) {
+    const iconBg    = t.dark ? t.bgCard    : 'oklch(96% 0.04 20)';
+    const iconBorder = t.dark ? t.border   : 'transparent';
+    const iconColor = 'oklch(62% 0.14 20)';
     return (
       <div style={S.screen}>
         <div style={S.header}><span style={S.title}>Saved</span></div>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 40, gap: 16 }}>
-          <div style={{ width: 64, height: 64, borderRadius: 20, background: 'oklch(94% 0.02 20)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'oklch(70% 0.10 20)' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 20, background: iconBg, border: `1px solid ${iconBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: iconColor }}>
             <IconHeart />
           </div>
           <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: t.textPrimary, textAlign: 'center' }}>No saved quotes yet</p>
@@ -37,12 +39,12 @@ function FavoritesScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetTod
         <span style={S.title}>Saved</span>
         <ControlsBtn onClick={() => setShowControls(v => !v)} active={showControls || hasActive} />
       </div>
-      {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeSort={sort} onSort={setSort} />}
+      {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeSort={sort} onSort={setSort} sortOpts={SORT_OPTS_FAVORITES} />}
       <div style={{ ...S.body, gap: 0, padding: '0 16px' }}>
         {grouped ? (
           grouped.map(([cat, items]) => (
             <div key={cat}>
-              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.7px', textTransform: 'uppercase', color: getColor(cat).text, padding: '14px 0 8px', borderBottom: `2px solid ${getColor(cat).accent}`, marginBottom: 2 }}>{cat}</div>
+              <CatSectionHeader cat={cat} />
               {items.map((quote, i) => (
                 <LibraryItem key={quote.id} quote={quote} todayQuotes={todayQuotes}
                   onFavorite={() => onFavorite(quote.id)}
