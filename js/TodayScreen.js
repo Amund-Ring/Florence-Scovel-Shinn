@@ -51,7 +51,7 @@ function TodayCard({ quote, locked, onLock, onRefresh, onTap }) {
           color: t.textPrimary, fontWeight: 400, textWrap: 'pretty',
         }}>{quote.quote}</p>
         <p style={{ fontSize: 11, color: t.textMuted, marginTop: 10, fontStyle: 'italic' }}>
-          {shortBookTitle(quote.book_title)}
+          {quote.book_title}
         </p>
       </div>
     </div>

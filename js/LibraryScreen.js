@@ -70,7 +70,7 @@ function LibraryItem({ quote, todayQuotes, onFavorite, onTap, onSetToday, isLast
         <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 14.5, lineHeight: 1.55, color: t.textPrimary, fontWeight: 400, textWrap: 'pretty', marginBottom: 5 }}>{quote.quote}</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <CatPill category={quote.category} small />
-          <span style={{ fontSize: 10, color: t.textMuted }}>· {shortBookTitle(quote.book_title)}</span>
+          <span style={{ fontSize: 10, color: t.textMuted }}>· {quote.book_title}</span>
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0, paddingTop: 2 }} onClick={e => e.stopPropagation()}>

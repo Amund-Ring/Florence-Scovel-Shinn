@@ -68,8 +68,3 @@ function sortQuotes(list, sort, allQuotes) {
   // 'cat' — sort by category then alphabetically within
   return [...list].sort((a, b) => a.category !== b.category ? a.category.localeCompare(b.category) : a.quote.localeCompare(b.quote));
 }
-
-/* ─── DISPLAY HELPERS ─── */
-function shortBookTitle(title) {
-  return title === 'The Game of Life and How to Play It' ? 'The Game of Life' : title;
-}
