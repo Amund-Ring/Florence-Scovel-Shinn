@@ -40,10 +40,12 @@ function App() {
       });
   }, []);
 
-  // Sync body background colour with theme on mobile
+  // Sync body background and status bar colour with theme
   React.useEffect(() => {
     document.body.style.background = isMobile ? activeTheme.bg : '#1c1917';
-  }, [isMobile, activeTheme]);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', darkMode ? '#1c1917' : '#faf8f5');
+  }, [isMobile, activeTheme, darkMode]);
 
   // Respond to viewport resize
   React.useEffect(() => {
