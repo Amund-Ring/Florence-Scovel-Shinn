@@ -63,6 +63,7 @@ function makeS(t) {
     body: {
       flex: 1, overflowY: 'auto', padding: '16px 16px 8px',
       display: 'flex', flexDirection: 'column', gap: 12,
+      minHeight: 0,
     },
     tabBar: {
       height: 60,

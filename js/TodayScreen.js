@@ -8,7 +8,7 @@ function TodayCard({ quote, locked, onLock, onRefresh, onTap }) {
       style={{
         background: t.bgCard, borderRadius: 16,
         border: `1px solid ${t.border}`, overflow: 'hidden',
-        boxShadow: t.shadow, cursor: 'pointer',
+        boxShadow: t.shadow, cursor: 'pointer', flexShrink: 0,
         transition: 'box-shadow 0.15s, transform 0.15s',
       }}
       onMouseEnter={e => { e.currentTarget.style.boxShadow = t.dark ? '0 4px 20px rgba(0,0,0,0.5)' : '0 4px 16px rgba(0,0,0,0.10)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
@@ -87,7 +87,7 @@ function TodayScreen({ todayQuotes, allQuotes, onLock, onRefreshSlot, onRefreshA
             onTap={() => onFocus(i)}
           />
         ))}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 4, paddingBottom: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 4, paddingBottom: 8, flexShrink: 0 }}>
           <button onClick={onRefreshAll} style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 14, fontWeight: 500,
