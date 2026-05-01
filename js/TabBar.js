@@ -1,11 +1,15 @@
 /* ─── CATEGORY PILL ─── */
 function CatPill({ category, small }) {
+  const t = useTheme();
   const col = getColor(category);
+  // In dark mode: tinted dark background + accent text instead of the light-on-light palette
+  const bg    = t.dark ? `color-mix(in oklch, ${col.accent} 14%, ${t.bgCard})` : col.bg;
+  const color = t.dark ? col.accent : col.text;
   return (
     <span style={{
       display: 'inline-block',
-      background: col.bg,
-      color: col.text,
+      background: bg,
+      color: color,
       fontSize: small ? 10 : 11,
       fontWeight: 500,
       padding: small ? '2px 7px' : '3px 9px',

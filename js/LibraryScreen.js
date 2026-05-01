@@ -1,12 +1,16 @@
 /* ─── FILTER / SORT CONTROLS ─── */
 function ControlsBtn({ onClick, active }) {
   const t = useTheme();
+  // In dark mode the near-white btnActiveBg is too harsh; use a mid-dark tone instead
+  const activeBg    = active ? (t.dark ? t.border    : t.btnActiveBg) : t.bgCard;
+  const activeColor = active ? (t.dark ? t.textPrimary : '#fff')       : t.textSecondary;
+  const activeBorder = active ? (t.dark ? t.textSecondary : t.textPrimary) : t.btnBorder;
   return (
     <button onClick={onClick} title="Filter &amp; Sort" style={{
       width: 34, height: 34, borderRadius: 10,
-      border: `1px solid ${active ? t.textPrimary : t.btnBorder}`,
-      background: active ? t.btnActiveBg : t.bgCard,
-      color: active ? (t.dark ? t.bg : '#fff') : t.textSecondary,
+      border: `1px solid ${activeBorder}`,
+      background: activeBg,
+      color: activeColor,
       cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
       transition: 'all 0.15s', flexShrink: 0,
     }}>
