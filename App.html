@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Florence Scovel Shinn — Daily Affirmations</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -25,6 +25,10 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 40px 20px;
+}
+@media (max-width: 600px) {
+  body { background: oklch(98% 0.008 60); min-height: 100dvh; display: block; }
+  #root { padding: 0; min-height: 100dvh; display: block; }
 }
 </style>
 </head>
@@ -793,8 +797,20 @@ function App() {
   const [focusMode, setFocusMode] = React.useState(null);
   const [slotPicker, setSlotPicker] = React.useState(null);
   const [darkMode, setDarkMode] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 600);
+
+  React.useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 600);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   const activeTheme = darkMode ? THEMES.night : THEMES.ivory;
+
+  React.useEffect(() => {
+    if (isMobile) document.body.style.background = activeTheme.bg;
+    else document.body.style.background = '#1c1917';
+  }, [isMobile, activeTheme]);
 
   // Pick a quote not in excludeIds
   const pickNew = (excludeIds) => pickQuote(quotes, excludeIds);
@@ -848,42 +864,63 @@ function App() {
     setSlotPicker(null);
   };
 
+  const screens = (
+    <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column', paddingTop: isMobile ? 0 : 50 }}>
+      <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+        {tab === 'today' && (
+          <TodayScreen
+            todayQuotes={todaySlots} allQuotes={quotes}
+            onLock={handleLock} onRefreshSlot={handleRefreshSlot}
+            onRefreshAll={handleRefreshAll} onFocus={openTodayFocus}
+            onFavorite={handleFavorite}
+            darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)}
+          />
+        )}
+        {tab === 'library' && (
+          <LibraryScreen allQuotes={quotes} todayQuotes={todaySlots}
+            onFavorite={handleFavorite} onFocus={openLibFocus}
+            onSetToday={(q) => setSlotPicker(q)} />
+        )}
+        {tab === 'favorites' && (
+          <FavoritesScreen allQuotes={quotes} todayQuotes={todaySlots}
+            onFavorite={handleFavorite} onFocus={openLibFocus}
+            onSetToday={(q) => setSlotPicker(q)} />
+        )}
+        {focusMode && (
+          <FocusMode quotes={focusMode.quotes} startIdx={focusMode.startIdx}
+            onClose={() => setFocusMode(null)} onFavorite={handleFavorite} allQuotes={quotes} />
+        )}
+        {slotPicker && (
+          <SlotPicker quote={slotPicker} todayQuotes={todaySlots} allQuotes={quotes}
+            onAssign={handleAssignSlot} onClose={() => setSlotPicker(null)} />
+        )}
+      </div>
+      {!focusMode && <TabBar active={tab} onTab={setTab} />}
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <ThemeCtx.Provider value={activeTheme}>
+        <div style={{
+          position: 'fixed', inset: 0,
+          paddingTop: 'env(safe-area-inset-top)',
+          paddingBottom: 'env(safe-area-inset-bottom)',
+          background: activeTheme.bg,
+          display: 'flex', flexDirection: 'column',
+          transition: 'background 0.3s',
+        }}>
+          {screens}
+        </div>
+      </ThemeCtx.Provider>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
       <ThemeCtx.Provider value={activeTheme}>
         <IOSDevice width={390} height={844} dark={darkMode}>
-          <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column', paddingTop: 50 }}>
-            <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-              {tab === 'today' && (
-                <TodayScreen
-                  todayQuotes={todaySlots} allQuotes={quotes}
-                  onLock={handleLock} onRefreshSlot={handleRefreshSlot}
-                  onRefreshAll={handleRefreshAll} onFocus={openTodayFocus}
-                  onFavorite={handleFavorite}
-                  darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)}
-                />
-              )}
-              {tab === 'library' && (
-                <LibraryScreen allQuotes={quotes} todayQuotes={todaySlots}
-                  onFavorite={handleFavorite} onFocus={openLibFocus}
-                  onSetToday={(q) => setSlotPicker(q)} />
-              )}
-              {tab === 'favorites' && (
-                <FavoritesScreen allQuotes={quotes} todayQuotes={todaySlots}
-                  onFavorite={handleFavorite} onFocus={openLibFocus}
-                  onSetToday={(q) => setSlotPicker(q)} />
-              )}
-              {focusMode && (
-                <FocusMode quotes={focusMode.quotes} startIdx={focusMode.startIdx}
-                  onClose={() => setFocusMode(null)} onFavorite={handleFavorite} allQuotes={quotes} />
-              )}
-              {slotPicker && (
-                <SlotPicker quote={slotPicker} todayQuotes={todaySlots} allQuotes={quotes}
-                  onAssign={handleAssignSlot} onClose={() => setSlotPicker(null)} />
-              )}
-            </div>
-            {!focusMode && <TabBar active={tab} onTab={setTab} />}
-          </div>
+          {screens}
         </IOSDevice>
       </ThemeCtx.Provider>
     </div>
