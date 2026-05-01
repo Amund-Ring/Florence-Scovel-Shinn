@@ -114,12 +114,12 @@ function App() {
         )}
         {!loading && tab === 'library' && (
           <LibraryScreen allQuotes={quotes} todayQuotes={todaySlots}
-            onFavorite={handleFavorite} onFocus={openLibFocus}
+            onFavorite={handleFavorite}
             onSetToday={(q) => setSlotPicker(q)} />
         )}
         {!loading && tab === 'favorites' && (
           <FavoritesScreen allQuotes={quotes} todayQuotes={todaySlots}
-            onFavorite={handleFavorite} onFocus={openLibFocus}
+            onFavorite={handleFavorite}
             onSetToday={(q) => setSlotPicker(q)} />
         )}
         {focusMode && (

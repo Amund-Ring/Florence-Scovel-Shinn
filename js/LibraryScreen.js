@@ -63,8 +63,8 @@ function LibraryItem({ quote, todayQuotes, onFavorite, onTap, onSetToday, isLast
       display: 'flex', alignItems: 'flex-start', gap: 12,
       padding: '14px 0',
       borderBottom: isLast ? 'none' : `1px solid ${t.borderSub}`,
-      cursor: 'pointer',
-    }} onClick={onTap}>
+      cursor: onTap ? 'pointer' : 'default',
+    }} onClick={onTap || undefined}>
       <div style={{ width: 3, background: col.accent, borderRadius: 2, alignSelf: 'stretch', minHeight: 32, flexShrink: 0, marginTop: 3 }} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 14.5, lineHeight: 1.55, color: t.textPrimary, fontWeight: 400, textWrap: 'pretty', marginBottom: 5 }}>{quote.quote}</p>
@@ -135,7 +135,6 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
               {items.map((quote, i) => (
                 <LibraryItem key={quote.id} quote={quote} todayQuotes={todayQuotes}
                   onFavorite={() => onFavorite(quote.id)}
-                  onTap={() => onFocus(allQuotes.findIndex(q => q.id === quote.id))}
                   onSetToday={() => onSetToday(quote)}
                   isLast={i === items.length - 1} />
               ))}
@@ -145,7 +144,6 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
           filtered.map((quote, i) => (
             <LibraryItem key={quote.id} quote={quote} todayQuotes={todayQuotes}
               onFavorite={() => onFavorite(quote.id)}
-              onTap={() => onFocus(allQuotes.findIndex(q => q.id === quote.id))}
               onSetToday={() => onSetToday(quote)}
               isLast={i === filtered.length - 1} />
           ))

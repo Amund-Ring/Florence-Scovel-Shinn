@@ -22,7 +22,7 @@ function SlotPicker({ quote, todayQuotes, allQuotes, onAssign, onClose }) {
         {/* Incoming quote preview */}
         <div>
           <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, fontWeight: 400, color: t.textPrimary, marginBottom: 6 }}>Add to Today</h3>
-          <div style={{ background: col.bg, borderRadius: 10, padding: '10px 12px', borderLeft: `3px solid ${col.accent}` }}>
+          <div style={{ background: t.dark ? `color-mix(in oklch, ${col.accent} 10%, ${t.bgCard})` : col.bg, borderRadius: 10, padding: '10px 12px', borderLeft: `3px solid ${col.accent}` }}>
             <CatPill category={quote.category} small />
             <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 14, lineHeight: 1.5, color: t.textPrimary, marginTop: 6 }}>
               {quote.quote.length > 80 ? quote.quote.slice(0, 80) + '…' : quote.quote}

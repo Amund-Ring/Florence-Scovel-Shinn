@@ -8,6 +8,7 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes }) {
 
   const q = quotes[idx];
   const col = getColor(q.category);
+  const quoteFontSize = q.quote.length > 220 ? 16 : q.quote.length > 150 ? 19 : q.quote.length > 100 ? 21 : 24;
   const fullQ = allQuotes.find(aq => aq.id === q.id);
   const isFav = fullQ?.is_favorite;
   const panelBg = t.dark ? t.bgCard : col.bg;
@@ -74,7 +75,7 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes }) {
           {/* Quote text */}
           <p style={{
             fontFamily: "'DM Serif Display', serif",
-            fontSize: 24, lineHeight: 1.65,
+            fontSize: quoteFontSize, lineHeight: 1.65,
             color: t.textPrimary, fontWeight: 400,
             textWrap: 'pretty',
             marginBottom: 28,
