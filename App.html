@@ -11,6 +11,12 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: none; }
 *::-webkit-scrollbar { display: none; }
+
+/* Thin scroll indicator for long lists (Library, Saved) */
+.list-scroll { scrollbar-width: thin; scrollbar-color: rgba(128,128,128,0.25) transparent; }
+.list-scroll::-webkit-scrollbar { display: block; width: 3px; }
+.list-scroll::-webkit-scrollbar-track { background: transparent; }
+.list-scroll::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.25); border-radius: 3px; }
 body {
   background: #1c1917;
   min-height: 100vh;

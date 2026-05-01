@@ -40,7 +40,7 @@ function FavoritesScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetTod
         <ControlsBtn onClick={() => setShowControls(v => !v)} active={showControls || hasActive} />
       </div>
       {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeSort={sort} onSort={setSort} sortOpts={SORT_OPTS_FAVORITES} />}
-      <div style={{ ...S.body, gap: 0, padding: '0 16px' }}>
+      <div className="list-scroll" style={{ ...S.body, gap: 0, padding: '0 16px' }}>
         {grouped ? (
           grouped.map(([cat, items]) => (
             <div key={cat}>

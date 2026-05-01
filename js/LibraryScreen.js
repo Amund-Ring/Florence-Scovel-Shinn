@@ -135,7 +135,7 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
         <ControlsBtn onClick={() => setShowControls(v => !v)} active={showControls || hasActive} />
       </div>
       {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeSort={activeSort} onSort={setActiveSort} sortOpts={SORT_OPTS_LIBRARY} />}
-      <div style={{ ...S.body, gap: 0, padding: '0 16px' }}>
+      <div className="list-scroll" style={{ ...S.body, gap: 0, padding: '0 16px' }}>
         {grouped ? (
           grouped.map(([cat, items]) => (
             <div key={cat}>
