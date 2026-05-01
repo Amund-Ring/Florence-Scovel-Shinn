@@ -84,9 +84,9 @@ function LibraryItem({ quote, todayQuotes, onFavorite, onTap, onSetToday, isLast
         }}><IconHeart filled={quote.is_favorite} /></button>
         <button onClick={onSetToday} title="Add to Today" style={{
           width: 30, height: 30, borderRadius: 8,
-          border: `1px solid ${isInToday ? col.accent : t.btnBorder}`,
-          background: isInToday ? col.bg : t.bgCard,
-          color: isInToday ? col.text : t.textSecondary,
+          border: `1px solid ${t.btnBorder}`,
+          background: t.bgCard,
+          color: t.textSecondary,
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: 13, fontWeight: 600, fontFamily: "'DM Sans', sans-serif",
           transition: 'all 0.15s',

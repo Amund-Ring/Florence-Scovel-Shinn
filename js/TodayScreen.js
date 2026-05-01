@@ -36,8 +36,8 @@ function TodayCard({ quote, locked, onLock, onRefresh, onTap }) {
             <button onClick={onLock} title={locked ? 'Unlock quote' : 'Lock quote'} style={{
               width: 30, height: 30, borderRadius: 8,
               border: `1px solid ${locked ? col.accent : t.btnBorder}`,
-              background: locked ? col.bg : t.bgCard,
-              color: locked ? col.text : t.textSecondary,
+              background: locked ? (t.dark ? `color-mix(in oklch, ${col.accent} 14%, ${t.bgCard})` : col.bg) : t.bgCard,
+              color: locked ? col.accent : t.textSecondary,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', transition: 'all 0.15s',
             }}>
