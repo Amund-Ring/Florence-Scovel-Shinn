@@ -28,7 +28,6 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: none; }
 *::-webkit-scrollbar { display: none; }
@@ -56,19 +55,19 @@ body {
 <div id="root"></div>
 
 <!-- iOS device frame component -->
-<script type="text/babel" src="ios-frame.jsx"></script>
+<script src="dist/ios-frame.js"></script>
 
 <!-- Load order matters: each file can use globals from files above it -->
-<script type="text/babel" src="js/theme.js"></script>    <!-- CAT_COLORS, THEMES, ThemeCtx, makeS -->
-<script type="text/babel" src="js/icons.js"></script>    <!-- Icon components -->
-<script type="text/babel" src="js/utils.js"></script>    <!-- pickQuote, sortQuotes, CAT_OPTS, SORT_OPTS -->
-<script type="text/babel" src="js/TabBar.js"></script>   <!-- CatPill, TabBar -->
-<script type="text/babel" src="js/TodayScreen.js"></script>     <!-- TodayCard, TodayScreen -->
-<script type="text/babel" src="js/LibraryScreen.js"></script>   <!-- ControlsBtn, ControlsPanel, LibraryItem, LibraryScreen -->
-<script type="text/babel" src="js/FavoritesScreen.js"></script> <!-- FavoritesScreen -->
-<script type="text/babel" src="js/FocusMode.js"></script>       <!-- FocusMode -->
-<script type="text/babel" src="js/SlotPicker.js"></script>      <!-- SlotPicker -->
-<script type="text/babel" src="js/App.js"></script>             <!-- App root + ReactDOM.render -->
+<script src="dist/theme.js"></script>
+<script src="dist/icons.js"></script>
+<script src="dist/utils.js"></script>
+<script src="dist/TabBar.js"></script>
+<script src="dist/TodayScreen.js"></script>
+<script src="dist/LibraryScreen.js"></script>
+<script src="dist/FavoritesScreen.js"></script>
+<script src="dist/FocusMode.js"></script>
+<script src="dist/SlotPicker.js"></script>
+<script src="dist/App.js"></script>
 
 </body>
 </html>

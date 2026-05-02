@@ -1,0 +1,25 @@
+{
+  "name": "florence-scovel-shinn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel js/ ios-frame.jsx --out-dir dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amund-Ring/Florence-Scovel-Shinn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Amund-Ring/Florence-Scovel-Shinn/issues"
+  },
+  "homepage": "https://github.com/Amund-Ring/Florence-Scovel-Shinn#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.28.6",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-react": "^7.28.5"
+  }
+}
