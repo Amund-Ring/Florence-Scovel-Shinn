@@ -40,17 +40,10 @@ function App() {
       });
   }, []);
 
-  // Sync body background and status bar colour with theme
+  // Sync body background with theme (theme-color is handled by the inline script in <head>)
   React.useEffect(() => {
     document.body.style.background = isMobile ? activeTheme.bg : '#1c1917';
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      meta.setAttribute('content', darkMode ? '#1c1917' : '#faf8f5');
-      // iOS only re-reads theme-color when the element is re-inserted into the DOM
-      meta.remove();
-      document.head.appendChild(meta);
-    }
-  }, [isMobile, activeTheme, darkMode]);
+  }, [isMobile, activeTheme]);
 
   // Respond to viewport resize
   React.useEffect(() => {
@@ -95,6 +88,17 @@ function App() {
     setSlotPicker(null);
   };
 
+  /* ── Dark mode toggle ── */
+  const handleToggleDark = () => {
+    const next = !darkMode;
+    setDarkMode(next); // writes to localStorage synchronously via usePersisted
+    // On iOS standalone PWA, theme-color is only read at page load.
+    // Reload so the status bar picks up the new color via the inline script in <head>.
+    const isStandalone = window.navigator.standalone ||
+      window.matchMedia('(display-mode: standalone)').matches;
+    if (isStandalone) window.location.reload();
+  };
+
   /* ── Focus mode ── */
   const openTodayFocus = (startIdx) => {
     const todayFull = todaySlots.map(tq => quotes.find(q => q.id === tq.id)).filter(Boolean);
@@ -116,7 +120,7 @@ function App() {
             todayQuotes={todaySlots} allQuotes={quotes}
             onLock={handleLock} onRefreshSlot={handleRefreshSlot}
             onRefreshAll={handleRefreshAll} onFocus={openTodayFocus}
-            darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)}
+            darkMode={darkMode} onToggleDark={handleToggleDark}
           />
         )}
         {!loading && tab === 'library' && (
