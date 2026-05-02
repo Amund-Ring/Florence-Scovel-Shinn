@@ -5,10 +5,20 @@ function FavoritesScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetTod
   const [sort, setSort]               = usePersisted('fss_fav_sort', 'date');
   const [activeCat, setActiveCat]     = usePersisted('fss_fav_cat', 'All');
   const [showControls, setShowControls] = React.useState(false);
+  const [showSearch, setShowSearch]   = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const toggleSearch = () => {
+    setShowSearch(v => { if (v) setSearchQuery(''); return !v; });
+  };
 
   const favs = allQuotes.filter(q => q.is_favorite);
   const hasActive = activeCat !== 'All' || sort !== 'date';
-  const displayed = activeCat === 'All' ? favs : favs.filter(q => q.category === activeCat);
+  let displayed = activeCat === 'All' ? favs : favs.filter(q => q.category === activeCat);
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    displayed = displayed.filter(quote => quote.quote.toLowerCase().includes(q));
+  }
   const sorted = sortQuotes(displayed, sort, allQuotes);
 
   const grouped = sort === 'cat'
@@ -37,8 +47,12 @@ function FavoritesScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetTod
     <div style={S.screen}>
       <div style={S.header}>
         <span style={S.title}>Saved</span>
-        <ControlsBtn onClick={() => setShowControls(v => !v)} active={showControls || hasActive} />
+        <div style={{ display: 'flex', gap: 8 }}>
+          <SearchBtn onClick={toggleSearch} active={showSearch || !!searchQuery.trim()} />
+          <ControlsBtn onClick={() => setShowControls(v => !v)} active={showControls || hasActive} />
+        </div>
       </div>
+      {showSearch && <SearchBar value={searchQuery} onChange={setSearchQuery} />}
       {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeSort={sort} onSort={setSort} sortOpts={SORT_OPTS_FAVORITES} />}
       <div className="list-scroll" style={{ ...S.body, gap: 0, padding: '0 13px 0 16px' }}>
         {grouped ? (

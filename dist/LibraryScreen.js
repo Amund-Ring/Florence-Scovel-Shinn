@@ -7,6 +7,89 @@ const CHIP_PAD = '5px 13px'; // vertical horizontal — filter chip padding
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 /* ─── FILTER / SORT CONTROLS ─── */
+function SearchBtn({
+  onClick,
+  active
+}) {
+  const t = useTheme();
+  return /*#__PURE__*/React.createElement("button", {
+    onClick: onClick,
+    title: "Search",
+    style: {
+      width: 34,
+      height: 34,
+      borderRadius: 10,
+      border: `1px solid ${active ? t.btnActiveBorder : t.btnBorder}`,
+      background: active ? t.btnActiveBg : t.bgCard,
+      color: active ? t.dark ? t.bg : '#fff' : t.textSecondary,
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'all 0.15s',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(IconSearch, null));
+}
+function SearchBar({
+  value,
+  onChange
+}) {
+  const t = useTheme();
+  const inputRef = React.useRef(null);
+  React.useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '8px 16px 10px',
+      borderBottom: `1px solid ${t.border}`
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      background: t.dark ? 'oklch(28% 0.015 60)' : 'oklch(94% 0.008 60)',
+      borderRadius: 10,
+      padding: '7px 12px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: t.textMuted,
+      display: 'flex',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(IconSearch, null)), /*#__PURE__*/React.createElement("input", {
+    ref: inputRef,
+    value: value,
+    onChange: e => onChange(e.target.value),
+    placeholder: "Search quotes\u2026",
+    style: {
+      flex: 1,
+      border: 'none',
+      background: 'transparent',
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: 15,
+      color: t.textPrimary,
+      outline: 'none'
+    }
+  }), value && /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      onChange('');
+      inputRef.current?.focus();
+    },
+    style: {
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      color: t.textMuted,
+      padding: 0,
+      display: 'flex',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(IconX, null))));
+}
 function ControlsBtn({
   onClick,
   active
@@ -264,7 +347,19 @@ function LibraryScreen({
   const [activeCat, setActiveCat] = usePersisted('fss_lib_cat', 'All');
   const [activeSort, setActiveSort] = usePersisted('fss_lib_sort', 'date');
   const [showControls, setShowControls] = React.useState(false);
+  const [showSearch, setShowSearch] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const toggleSearch = () => {
+    setShowSearch(v => {
+      if (v) setSearchQuery('');
+      return !v;
+    });
+  };
   let filtered = activeCat === 'All' ? allQuotes : allQuotes.filter(q => q.category === activeCat);
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(quote => quote.quote.toLowerCase().includes(q));
+  }
   filtered = sortQuotes(filtered, activeSort, allQuotes);
   const hasActive = activeCat !== 'All' || activeSort !== 'date';
   const grouped = activeSort === 'cat' ? Object.entries(filtered.reduce((acc, q) => {
@@ -277,10 +372,21 @@ function LibraryScreen({
     style: S.header
   }, /*#__PURE__*/React.createElement("span", {
     style: S.title
-  }, "Library"), /*#__PURE__*/React.createElement(ControlsBtn, {
+  }, "Library"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(SearchBtn, {
+    onClick: toggleSearch,
+    active: showSearch || !!searchQuery.trim()
+  }), /*#__PURE__*/React.createElement(ControlsBtn, {
     onClick: () => setShowControls(v => !v),
     active: showControls || hasActive
-  })), showControls && /*#__PURE__*/React.createElement(ControlsPanel, {
+  }))), showSearch && /*#__PURE__*/React.createElement(SearchBar, {
+    value: searchQuery,
+    onChange: setSearchQuery
+  }), showControls && /*#__PURE__*/React.createElement(ControlsPanel, {
     activeCat: activeCat,
     onCat: setActiveCat,
     activeSort: activeSort,

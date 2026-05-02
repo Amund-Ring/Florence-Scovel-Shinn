@@ -7,6 +7,56 @@ const CHIP_PAD      = '5px 13px';  // vertical horizontal — filter chip paddin
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 /* ─── FILTER / SORT CONTROLS ─── */
+function SearchBtn({ onClick, active }) {
+  const t = useTheme();
+  return (
+    <button onClick={onClick} title="Search" style={{
+      width: 34, height: 34, borderRadius: 10,
+      border: `1px solid ${active ? t.btnActiveBorder : t.btnBorder}`,
+      background: active ? t.btnActiveBg : t.bgCard,
+      color: active ? (t.dark ? t.bg : '#fff') : t.textSecondary,
+      cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      transition: 'all 0.15s', flexShrink: 0,
+    }}>
+      <IconSearch />
+    </button>
+  );
+}
+
+function SearchBar({ value, onChange }) {
+  const t = useTheme();
+  const inputRef = React.useRef(null);
+  React.useEffect(() => { inputRef.current?.focus(); }, []);
+  return (
+    <div style={{ padding: '8px 16px 10px', borderBottom: `1px solid ${t.border}` }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 8,
+        background: t.dark ? 'oklch(28% 0.015 60)' : 'oklch(94% 0.008 60)',
+        borderRadius: 10, padding: '7px 12px',
+      }}>
+        <span style={{ color: t.textMuted, display: 'flex', flexShrink: 0 }}><IconSearch /></span>
+        <input
+          ref={inputRef}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder="Search quotes…"
+          style={{
+            flex: 1, border: 'none', background: 'transparent',
+            fontFamily: "'DM Sans', sans-serif", fontSize: 15,
+            color: t.textPrimary, outline: 'none',
+          }}
+        />
+        {value && (
+          <button onClick={() => { onChange(''); inputRef.current?.focus(); }} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: t.textMuted, padding: 0, display: 'flex', flexShrink: 0,
+          }}><IconX /></button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ControlsBtn({ onClick, active }) {
   const t = useTheme();
   // In dark mode the near-white btnActiveBg is too harsh; use a mid-dark tone instead
@@ -119,8 +169,18 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
   const [activeCat, setActiveCat] = usePersisted('fss_lib_cat', 'All');
   const [activeSort, setActiveSort] = usePersisted('fss_lib_sort', 'date');
   const [showControls, setShowControls] = React.useState(false);
+  const [showSearch, setShowSearch] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const toggleSearch = () => {
+    setShowSearch(v => { if (v) setSearchQuery(''); return !v; });
+  };
 
   let filtered = activeCat === 'All' ? allQuotes : allQuotes.filter(q => q.category === activeCat);
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(quote => quote.quote.toLowerCase().includes(q));
+  }
   filtered = sortQuotes(filtered, activeSort, allQuotes);
   const hasActive = activeCat !== 'All' || activeSort !== 'date';
 
@@ -132,8 +192,12 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
     <div style={S.screen}>
       <div style={S.header}>
         <span style={S.title}>Library</span>
-        <ControlsBtn onClick={() => setShowControls(v => !v)} active={showControls || hasActive} />
+        <div style={{ display: 'flex', gap: 8 }}>
+          <SearchBtn onClick={toggleSearch} active={showSearch || !!searchQuery.trim()} />
+          <ControlsBtn onClick={() => setShowControls(v => !v)} active={showControls || hasActive} />
+        </div>
       </div>
+      {showSearch && <SearchBar value={searchQuery} onChange={setSearchQuery} />}
       {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeSort={activeSort} onSort={setActiveSort} sortOpts={SORT_OPTS_LIBRARY} />}
       <div className="list-scroll" style={{ ...S.body, gap: 0, padding: '0 13px 0 16px' }}>
         {grouped ? (

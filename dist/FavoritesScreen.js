@@ -11,9 +11,21 @@ function FavoritesScreen({
   const [sort, setSort] = usePersisted('fss_fav_sort', 'date');
   const [activeCat, setActiveCat] = usePersisted('fss_fav_cat', 'All');
   const [showControls, setShowControls] = React.useState(false);
+  const [showSearch, setShowSearch] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const toggleSearch = () => {
+    setShowSearch(v => {
+      if (v) setSearchQuery('');
+      return !v;
+    });
+  };
   const favs = allQuotes.filter(q => q.is_favorite);
   const hasActive = activeCat !== 'All' || sort !== 'date';
-  const displayed = activeCat === 'All' ? favs : favs.filter(q => q.category === activeCat);
+  let displayed = activeCat === 'All' ? favs : favs.filter(q => q.category === activeCat);
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    displayed = displayed.filter(quote => quote.quote.toLowerCase().includes(q));
+  }
   const sorted = sortQuotes(displayed, sort, allQuotes);
   const grouped = sort === 'cat' ? Object.entries(sorted.reduce((acc, q) => {
     (acc[q.category] = acc[q.category] || []).push(q);
@@ -73,10 +85,21 @@ function FavoritesScreen({
     style: S.header
   }, /*#__PURE__*/React.createElement("span", {
     style: S.title
-  }, "Saved"), /*#__PURE__*/React.createElement(ControlsBtn, {
+  }, "Saved"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(SearchBtn, {
+    onClick: toggleSearch,
+    active: showSearch || !!searchQuery.trim()
+  }), /*#__PURE__*/React.createElement(ControlsBtn, {
     onClick: () => setShowControls(v => !v),
     active: showControls || hasActive
-  })), showControls && /*#__PURE__*/React.createElement(ControlsPanel, {
+  }))), showSearch && /*#__PURE__*/React.createElement(SearchBar, {
+    value: searchQuery,
+    onChange: setSearchQuery
+  }), showControls && /*#__PURE__*/React.createElement(ControlsPanel, {
     activeCat: activeCat,
     onCat: setActiveCat,
     activeSort: sort,
