@@ -141,6 +141,10 @@ function App() {
     quotes,
     startIdx
   });
+  const openFavFocus = (filteredQuotes, startIdx) => setFocusMode({
+    quotes: filteredQuotes,
+    startIdx
+  });
 
   /* ── Shared screen content ── */
   const screens = /*#__PURE__*/React.createElement("div", {
@@ -185,7 +189,8 @@ function App() {
     allQuotes: quotes,
     todayQuotes: todaySlots,
     onFavorite: handleFavorite,
-    onSetToday: q => setSlotPicker(q)
+    onSetToday: q => setSlotPicker(q),
+    onFocus: openFavFocus
   }), focusMode && /*#__PURE__*/React.createElement(FocusMode, {
     quotes: focusMode.quotes,
     startIdx: focusMode.startIdx,

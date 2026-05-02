@@ -149,7 +149,7 @@ function FocusMode({
       color: t.textMuted,
       fontStyle: 'italic'
     }
-  }, q.chapter_title), /*#__PURE__*/React.createElement("div", {
+  }, q.chapter_title), quotes.length < 5 && /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       gap: 8,
@@ -164,7 +164,7 @@ function FocusMode({
       height: 8,
       borderRadius: 4,
       cursor: 'pointer',
-      background: i === idx ? t.dark ? t.textPrimary : t.textPrimary : t.border,
+      background: i === idx ? t.textPrimary : t.border,
       opacity: i === idx ? 1 : 0.4,
       transition: 'opacity 0.25s, background 0.25s'
     }

@@ -112,6 +112,7 @@ function App() {
     setFocusMode({ quotes: todayFull, startIdx });
   };
   const openLibFocus = (startIdx) => setFocusMode({ quotes, startIdx });
+  const openFavFocus = (filteredQuotes, startIdx) => setFocusMode({ quotes: filteredQuotes, startIdx });
 
   /* ── Shared screen content ── */
   const screens = (
@@ -138,7 +139,8 @@ function App() {
         {!loading && tab === 'favorites' && (
           <FavoritesScreen allQuotes={quotes} todayQuotes={todaySlots}
             onFavorite={handleFavorite}
-            onSetToday={(q) => setSlotPicker(q)} />
+            onSetToday={(q) => setSlotPicker(q)}
+            onFocus={openFavFocus} />
         )}
         {focusMode && (
           <FocusMode quotes={focusMode.quotes} startIdx={focusMode.startIdx}

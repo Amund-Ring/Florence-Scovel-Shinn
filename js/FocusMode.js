@@ -89,17 +89,19 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes, isMobile 
           <p style={{ fontSize: 13, color: t.textSecondary, fontStyle: 'italic', marginBottom: 4 }}>{q.book_title}</p>
           <p style={{ fontSize: 12, color: t.textMuted, fontStyle: 'italic' }}>{q.chapter_title}</p>
 
-          {/* Equal-width navigation pills */}
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 32 }}>
-            {quotes.map((_, i) => (
-              <div key={i} onClick={() => goTo(i)} style={{
-                width: 36, height: 8, borderRadius: 4, cursor: 'pointer',
-                background: i === idx ? (t.dark ? t.textPrimary : t.textPrimary) : t.border,
-                opacity: i === idx ? 1 : 0.4,
-                transition: 'opacity 0.25s, background 0.25s',
-              }} />
-            ))}
-          </div>
+          {/* Navigation pills — only shown when there are fewer than 5 quotes */}
+          {quotes.length < 5 && (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 32 }}>
+              {quotes.map((_, i) => (
+                <div key={i} onClick={() => goTo(i)} style={{
+                  width: 36, height: 8, borderRadius: 4, cursor: 'pointer',
+                  background: i === idx ? t.textPrimary : t.border,
+                  opacity: i === idx ? 1 : 0.4,
+                  transition: 'opacity 0.25s, background 0.25s',
+                }} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

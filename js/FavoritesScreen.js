@@ -63,7 +63,8 @@ function FavoritesScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetTod
               {items.map((quote, i) => (
                 <LibraryItem key={quote.id} quote={quote} todayQuotes={todayQuotes}
                   onFavorite={() => onFavorite(quote.id)}
-                                    onSetToday={() => onSetToday(quote)}
+                  onSetToday={() => onSetToday(quote)}
+                  onTap={() => onFocus(sorted, sorted.findIndex(q => q.id === quote.id))}
                   isLast={i === items.length - 1} />
               ))}
             </div>
@@ -72,7 +73,8 @@ function FavoritesScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetTod
           sorted.map((quote, i) => (
             <LibraryItem key={quote.id} quote={quote} todayQuotes={todayQuotes}
               onFavorite={() => onFavorite(quote.id)}
-                            onSetToday={() => onSetToday(quote)}
+              onSetToday={() => onSetToday(quote)}
+              onTap={() => onFocus(sorted, i)}
               isLast={i === sorted.length - 1} />
           ))
         )}

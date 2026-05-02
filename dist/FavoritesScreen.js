@@ -124,6 +124,7 @@ function FavoritesScreen({
     todayQuotes: todayQuotes,
     onFavorite: () => onFavorite(quote.id),
     onSetToday: () => onSetToday(quote),
+    onTap: () => onFocus(sorted, sorted.findIndex(q => q.id === quote.id)),
     isLast: i === items.length - 1
   })))) : sorted.map((quote, i) => /*#__PURE__*/React.createElement(LibraryItem, {
     key: quote.id,
@@ -131,6 +132,7 @@ function FavoritesScreen({
     todayQuotes: todayQuotes,
     onFavorite: () => onFavorite(quote.id),
     onSetToday: () => onSetToday(quote),
+    onTap: () => onFocus(sorted, i),
     isLast: i === sorted.length - 1
   }))));
 }
