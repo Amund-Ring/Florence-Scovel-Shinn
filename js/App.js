@@ -146,6 +146,14 @@ function App() {
   if (isMobile) {
     return (
       <ThemeCtx.Provider value={activeTheme}>
+        {/* Instant-color fill behind the status bar — no transition so iOS compositor
+            picks up the new color in the same paint frame as the theme toggle */}
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0,
+          height: 'env(safe-area-inset-top)',
+          background: activeTheme.bg,
+          zIndex: 1000,
+        }} />
         <div style={{
           position: 'fixed', inset: 0,
           paddingTop: 'env(safe-area-inset-top)',
