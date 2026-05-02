@@ -14,17 +14,19 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes }) {
   const panelBg = t.dark ? t.bgCard : col.bg;
 
   const goTo = (newIdx) => {
-    if (newIdx < 0 || newIdx >= quotes.length) return;
+    if (quotes.length <= 1) return;
+    const n = quotes.length;
+    const wrapped = ((newIdx % n) + n) % n;
     setAnimDir(newIdx > idx ? -1 : 1);
-    setTimeout(() => { setIdx(newIdx); setAnimDir(0); setOffset(0); }, 180);
+    setTimeout(() => { setIdx(wrapped); setAnimDir(0); setOffset(0); }, 180);
   };
 
   const handlePointerDown = (e) => { setDragStart(e.clientX); };
   const handlePointerMove = (e) => { if (dragStart === null) return; setOffset(e.clientX - dragStart); };
   const handlePointerUp = () => {
     if (Math.abs(offset) > 60) {
-      if (offset < 0 && idx < quotes.length - 1) goTo(idx + 1);
-      else if (offset > 0 && idx > 0) goTo(idx - 1);
+      if (offset < 0) goTo(idx + 1);
+      else goTo(idx - 1);
     }
     setDragStart(null); setOffset(0);
   };
@@ -38,7 +40,7 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes }) {
   });
 
   return (
-    <div style={{ position: 'absolute', inset: 0, zIndex: 50, background: panelBg, display: 'flex', flexDirection: 'column', overflow: 'hidden', transition: 'background 0.3s' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: panelBg, display: 'flex', flexDirection: 'column', overflow: 'hidden', transition: 'background 0.3s', paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
 
       {/* Top bar: close (left) · heart (right) — no dots here */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px 0', flexShrink: 0 }}>
@@ -103,16 +105,14 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes }) {
 
       {/* Bottom bar: prev · counter · next */}
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 16px 28px', alignItems: 'center', flexShrink: 0 }}>
-        <button onClick={() => goTo(idx - 1)} disabled={idx === 0} style={iconBtn({
+        <button onClick={() => goTo(idx - 1)} style={iconBtn({
           width: 40, height: 40, borderRadius: 12,
-          color: idx === 0 ? t.border : t.textPrimary,
-          cursor: idx === 0 ? 'default' : 'pointer',
+          color: t.textPrimary, cursor: 'pointer',
         })}><IconChevronLeft /></button>
         <span style={{ fontSize: 12, color: t.textSecondary, fontWeight: 500 }}>{idx + 1} / {quotes.length}</span>
-        <button onClick={() => goTo(idx + 1)} disabled={idx === quotes.length - 1} style={iconBtn({
+        <button onClick={() => goTo(idx + 1)} style={iconBtn({
           width: 40, height: 40, borderRadius: 12,
-          color: idx === quotes.length - 1 ? t.border : t.textPrimary,
-          cursor: idx === quotes.length - 1 ? 'default' : 'pointer',
+          color: t.textPrimary, cursor: 'pointer',
         })}><IconChevronRight /></button>
       </div>
     </div>

@@ -44,7 +44,12 @@ function App() {
   React.useEffect(() => {
     document.body.style.background = isMobile ? activeTheme.bg : '#1c1917';
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', darkMode ? '#1c1917' : '#faf8f5');
+    if (meta) {
+      meta.setAttribute('content', darkMode ? '#1c1917' : '#faf8f5');
+      // iOS only re-reads theme-color when the element is re-inserted into the DOM
+      meta.remove();
+      document.head.appendChild(meta);
+    }
   }, [isMobile, activeTheme, darkMode]);
 
   // Respond to viewport resize

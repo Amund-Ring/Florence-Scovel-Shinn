@@ -19,7 +19,12 @@ const THEMES = {
     textSecondary: 'oklch(60% 0.015 60)',
     textMuted:     'oklch(65% 0.015 60)',
     btnBorder:     'oklch(88% 0.01 60)',
-    btnActiveBg:   'oklch(20% 0.02 60)',
+    // Option A — warm brown (earthy, warm): uncomment one, comment the others
+    btnActiveBg:   'oklch(42% 0.05 65)',
+    // Option B — forest green (echoes the app's sage palette):
+    // btnActiveBg: 'oklch(38% 0.09 155)',
+    // Option C — muted plum (soft, neutral-cool):
+    // btnActiveBg: 'oklch(38% 0.08 285)',
     shadow:        '0 1px 4px rgba(0,0,0,0.05)',
     dark: false,
   },
