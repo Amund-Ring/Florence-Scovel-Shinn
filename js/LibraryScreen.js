@@ -171,6 +171,7 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
   const [showControls, setShowControls] = React.useState(false);
   const [showSearch, setShowSearch] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const kbHeight = useKeyboardHeight();
 
   const toggleSearch = () => {
     setShowSearch(v => { if (v) setSearchQuery(''); return !v; });
@@ -199,7 +200,7 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
       </div>
       {showSearch && <SearchBar value={searchQuery} onChange={setSearchQuery} />}
       {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeSort={activeSort} onSort={setActiveSort} sortOpts={SORT_OPTS_LIBRARY} />}
-      <div className="list-scroll" style={{ ...S.body, gap: 0, padding: '0 13px 0 16px' }}>
+      <div className="list-scroll" style={{ ...S.body, gap: 0, padding: '0 13px 0 16px', paddingBottom: kbHeight > 0 ? kbHeight : 8 }}>
         {grouped ? (
           grouped.map(([cat, items]) => (
             <div key={cat}>

@@ -29,6 +29,19 @@ const CAT_OPTS = ALL_CATS.map(c => ({
   label: c
 }));
 
+/* ─── KEYBOARD HEIGHT HOOK ─── */
+function useKeyboardHeight() {
+  const [kbHeight, setKbHeight] = React.useState(0);
+  React.useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => setKbHeight(Math.max(0, window.innerHeight - vv.height - vv.offsetTop));
+    vv.addEventListener('resize', update);
+    return () => vv.removeEventListener('resize', update);
+  }, []);
+  return kbHeight;
+}
+
 /* ─── PERSISTENCE HOOK ─── */
 // Drop-in replacement for React.useState that reads/writes localStorage.
 function usePersisted(key, defaultValue) {
