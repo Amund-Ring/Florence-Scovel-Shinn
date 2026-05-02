@@ -40,9 +40,12 @@ function App() {
       });
   }, []);
 
-  // Sync body background and theme-color meta tag with current theme
+  // Sync body background, theme-color, and colorScheme with current theme.
+  // colorScheme is the key for black-translucent status bar: iOS reads this
+  // property from the native rendering pipeline and updates the overlay tint dynamically.
   React.useEffect(() => {
     document.body.style.background = isMobile ? activeTheme.bg : '#1c1917';
+    document.documentElement.style.colorScheme = darkMode ? 'dark' : 'light';
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
       meta.setAttribute('content', darkMode ? '#1c1917' : '#faf8f5');

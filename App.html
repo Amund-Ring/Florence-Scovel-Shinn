@@ -7,7 +7,7 @@
 <link rel="manifest" href="/manifest.json" />
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="theme-color" content="#faf8f5" />
 <script>
 // Runs before React — sets theme-color and body bg from localStorage so iOS reads
@@ -17,7 +17,7 @@
     var dark = JSON.parse(localStorage.getItem('fss_dark'));
     if (dark) {
       document.querySelector('meta[name="theme-color"]').content = '#1c1917';
-      // Inject style so body bg is correct before React paints (prevents flash)
+      document.documentElement.style.colorScheme = 'dark';
       var s = document.createElement('style');
       s.textContent = '@media (max-width: 600px) { body { background: oklch(16% 0.015 60) !important; } }';
       document.head.appendChild(s);
