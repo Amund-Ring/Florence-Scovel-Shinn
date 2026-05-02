@@ -1,5 +1,5 @@
 /* ─── FOCUS MODE (full-screen swipeable quote viewer) ─── */
-function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes, isMobile }) {
+function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes, isMobile, onBgChange }) {
   const t = useTheme();
   const [idx, setIdx]             = React.useState(startIdx);
   const [dragStart, setDragStart] = React.useState(null);
@@ -12,6 +12,10 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes, isMobile 
   const fullQ = allQuotes.find(aq => aq.id === q.id);
   const isFav = fullQ?.is_favorite;
   const panelBg = t.dark ? t.bgCard : col.bg;
+
+  React.useEffect(() => {
+    if (onBgChange) onBgChange(panelBg);
+  }, [panelBg]);
 
   const goTo = (newIdx) => {
     if (quotes.length <= 1) return;

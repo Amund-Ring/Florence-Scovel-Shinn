@@ -5,6 +5,7 @@ function App() {
   const [darkMode, setDarkMode] = usePersisted('fss_dark', false);
   const [tab, setTab] = React.useState('today');
   const [focusMode, setFocusMode] = React.useState(null);
+  const [focusBg, setFocusBg] = React.useState(null);
   const [slotPicker, setSlotPicker] = React.useState(null);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 600);
 
@@ -194,10 +195,14 @@ function App() {
   }), focusMode && /*#__PURE__*/React.createElement(FocusMode, {
     quotes: focusMode.quotes,
     startIdx: focusMode.startIdx,
-    onClose: () => setFocusMode(null),
+    onClose: () => {
+      setFocusMode(null);
+      setFocusBg(null);
+    },
     onFavorite: handleFavorite,
     allQuotes: quotes,
-    isMobile: isMobile
+    isMobile: isMobile,
+    onBgChange: isMobile ? null : setFocusBg
   }), slotPicker && /*#__PURE__*/React.createElement(SlotPicker, {
     quote: slotPicker,
     todayQuotes: todaySlots,
@@ -252,7 +257,7 @@ function App() {
     width: 390,
     height: 844,
     dark: darkMode,
-    bg: activeTheme.bg
+    bg: focusBg || activeTheme.bg
   }, screens)));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));

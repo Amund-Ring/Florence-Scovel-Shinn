@@ -5,7 +5,8 @@ function FocusMode({
   onClose,
   onFavorite,
   allQuotes,
-  isMobile
+  isMobile,
+  onBgChange
 }) {
   const t = useTheme();
   const [idx, setIdx] = React.useState(startIdx);
@@ -18,6 +19,9 @@ function FocusMode({
   const fullQ = allQuotes.find(aq => aq.id === q.id);
   const isFav = fullQ?.is_favorite;
   const panelBg = t.dark ? t.bgCard : col.bg;
+  React.useEffect(() => {
+    if (onBgChange) onBgChange(panelBg);
+  }, [panelBg]);
   const goTo = newIdx => {
     if (quotes.length <= 1) return;
     const n = quotes.length;

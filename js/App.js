@@ -6,6 +6,7 @@ function App() {
 
   const [tab, setTab]               = React.useState('today');
   const [focusMode, setFocusMode]   = React.useState(null);
+  const [focusBg, setFocusBg]       = React.useState(null);
   const [slotPicker, setSlotPicker] = React.useState(null);
   const [isMobile, setIsMobile]     = React.useState(window.innerWidth <= 600);
 
@@ -144,7 +145,9 @@ function App() {
         )}
         {focusMode && (
           <FocusMode quotes={focusMode.quotes} startIdx={focusMode.startIdx}
-            onClose={() => setFocusMode(null)} onFavorite={handleFavorite} allQuotes={quotes} isMobile={isMobile} />
+            onClose={() => { setFocusMode(null); setFocusBg(null); }}
+            onFavorite={handleFavorite} allQuotes={quotes} isMobile={isMobile}
+            onBgChange={isMobile ? null : setFocusBg} />
         )}
         {slotPicker && (
           <SlotPicker quote={slotPicker} todayQuotes={todaySlots} allQuotes={quotes}
@@ -185,7 +188,7 @@ function App() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '40px 20px' }}>
       <ThemeCtx.Provider value={activeTheme}>
-        <IOSDevice width={390} height={844} dark={darkMode} bg={activeTheme.bg}>
+        <IOSDevice width={390} height={844} dark={darkMode} bg={focusBg || activeTheme.bg}>
           {screens}
         </IOSDevice>
       </ThemeCtx.Provider>
