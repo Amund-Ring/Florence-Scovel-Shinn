@@ -121,6 +121,14 @@ function App() {
     setSlotPicker(null);
   };
 
+  /* ── Dark mode toggle ── */
+  const handleToggleDark = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    if (isStandalone) window.location.reload();
+  };
+
   /* ── Focus mode ── */
   const openTodayFocus = startIdx => {
     const todayFull = todaySlots.map(tq => quotes.find(q => q.id === tq.id)).filter(Boolean);
@@ -167,7 +175,7 @@ function App() {
     onRefreshAll: handleRefreshAll,
     onFocus: openTodayFocus,
     darkMode: darkMode,
-    onToggleDark: () => setDarkMode(v => !v)
+    onToggleDark: handleToggleDark
   }), !loading && tab === 'library' && /*#__PURE__*/React.createElement(LibraryScreen, {
     allQuotes: quotes,
     todayQuotes: todaySlots,
