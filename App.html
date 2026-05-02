@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Florence Scovel Shinn — Daily Affirmations</title>
 <link rel="manifest" href="/manifest.json" />
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
@@ -46,6 +46,7 @@ body {
   min-height: 100vh;
 }
 @media (max-width: 600px) {
+  html, body { overflow: hidden; height: 100%; }
   body { background: oklch(98% 0.008 60); min-height: 100dvh; }
   #root { min-height: 100dvh; }
 }
