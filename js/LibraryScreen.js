@@ -12,7 +12,7 @@ function ControlsBtn({ onClick, active }) {
   // In dark mode the near-white btnActiveBg is too harsh; use a mid-dark tone instead
   const activeBg    = active ? (t.dark ? t.border    : t.btnActiveBg) : t.bgCard;
   const activeColor = active ? (t.dark ? t.textPrimary : '#fff')       : t.textSecondary;
-  const activeBorder = active ? (t.dark ? t.textSecondary : t.textPrimary) : t.btnBorder;
+  const activeBorder = active ? (t.dark ? t.textSecondary : t.btnActiveBorder) : t.btnBorder;
   return (
     <button onClick={onClick} title="Filter &amp; Sort" style={{
       width: 34, height: 34, borderRadius: 10,
@@ -36,9 +36,9 @@ function ScrollChipRow({ label, options, active, onSelect }) {
         {options.map(opt => (
           <button key={opt.id} onClick={() => onSelect(opt.id)} style={{
             fontFamily: "'DM Sans', sans-serif",
-            fontSize: CHIP_FONT, fontWeight: active === opt.id ? 600 : 400,
+            fontSize: CHIP_FONT, fontWeight: 500,
             padding: CHIP_PAD, borderRadius: 20, flexShrink: 0,
-            border: active === opt.id ? 'none' : `1px solid ${t.btnBorder}`,
+            border: `1px solid ${active === opt.id ? t.btnActiveBorder : t.btnBorder}`,
             background: active === opt.id ? t.btnActiveBg : t.bgCard,
             color: active === opt.id ? (t.dark ? t.bg : '#fff') : t.textSecondary,
             cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap',
