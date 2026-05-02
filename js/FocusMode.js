@@ -1,5 +1,5 @@
 /* ─── FOCUS MODE (full-screen swipeable quote viewer) ─── */
-function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes }) {
+function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes, isMobile }) {
   const t = useTheme();
   const [idx, setIdx]             = React.useState(startIdx);
   const [dragStart, setDragStart] = React.useState(null);
@@ -40,7 +40,7 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes }) {
   });
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: panelBg, display: 'flex', flexDirection: 'column', overflow: 'hidden', transition: 'background 0.3s', paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <div style={{ position: isMobile ? 'fixed' : 'absolute', inset: 0, zIndex: 50, background: panelBg, display: 'flex', flexDirection: 'column', overflow: 'hidden', transition: 'background 0.3s', paddingTop: isMobile ? 'env(safe-area-inset-top)' : 0, paddingBottom: isMobile ? 'env(safe-area-inset-bottom)' : 0 }}>
 
       {/* Top bar: close (left) · heart (right) — no dots here */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px 0', flexShrink: 0 }}>

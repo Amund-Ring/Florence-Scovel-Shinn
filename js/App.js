@@ -142,7 +142,7 @@ function App() {
         )}
         {focusMode && (
           <FocusMode quotes={focusMode.quotes} startIdx={focusMode.startIdx}
-            onClose={() => setFocusMode(null)} onFavorite={handleFavorite} allQuotes={quotes} />
+            onClose={() => setFocusMode(null)} onFavorite={handleFavorite} allQuotes={quotes} isMobile={isMobile} />
         )}
         {slotPicker && (
           <SlotPicker quote={slotPicker} todayQuotes={todaySlots} allQuotes={quotes}

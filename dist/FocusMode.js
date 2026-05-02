@@ -4,7 +4,8 @@ function FocusMode({
   startIdx,
   onClose,
   onFavorite,
-  allQuotes
+  allQuotes,
+  isMobile
 }) {
   const t = useTheme();
   const [idx, setIdx] = React.useState(startIdx);
@@ -57,7 +58,7 @@ function FocusMode({
   });
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      position: 'fixed',
+      position: isMobile ? 'fixed' : 'absolute',
       inset: 0,
       zIndex: 50,
       background: panelBg,
@@ -65,8 +66,8 @@ function FocusMode({
       flexDirection: 'column',
       overflow: 'hidden',
       transition: 'background 0.3s',
-      paddingTop: 'env(safe-area-inset-top)',
-      paddingBottom: 'env(safe-area-inset-bottom)'
+      paddingTop: isMobile ? 'env(safe-area-inset-top)' : 0,
+      paddingBottom: isMobile ? 'env(safe-area-inset-bottom)' : 0
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {

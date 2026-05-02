@@ -191,7 +191,8 @@ function App() {
     startIdx: focusMode.startIdx,
     onClose: () => setFocusMode(null),
     onFavorite: handleFavorite,
-    allQuotes: quotes
+    allQuotes: quotes,
+    isMobile: isMobile
   }), slotPicker && /*#__PURE__*/React.createElement(SlotPicker, {
     quote: slotPicker,
     todayQuotes: todaySlots,
