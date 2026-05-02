@@ -204,6 +204,25 @@ const IconX = () => /*#__PURE__*/React.createElement("svg", {
   x2: "18",
   y2: "18"
 }));
+const IconSearch = () => /*#__PURE__*/React.createElement("svg", {
+  width: "16",
+  height: "16",
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2.2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round"
+}, /*#__PURE__*/React.createElement("circle", {
+  cx: "11",
+  cy: "11",
+  r: "8"
+}), /*#__PURE__*/React.createElement("line", {
+  x1: "21",
+  y1: "21",
+  x2: "16.65",
+  y2: "16.65"
+}));
 const IconControls = ({
   active
 }) => /*#__PURE__*/React.createElement("svg", {

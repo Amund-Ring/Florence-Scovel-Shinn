@@ -362,7 +362,8 @@ function IOSDevice({
   height = 874,
   dark = false,
   title,
-  keyboard = false
+  keyboard = false,
+  bg
 }) {
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -371,7 +372,7 @@ function IOSDevice({
       borderRadius: 48,
       overflow: 'hidden',
       position: 'relative',
-      background: dark ? '#000' : '#F2F2F7',
+      background: bg || (dark ? '#000' : '#F2F2F7'),
       boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
       fontFamily: '-apple-system, system-ui, sans-serif',
       WebkitFontSmoothing: 'antialiased'

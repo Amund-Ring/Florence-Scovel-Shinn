@@ -246,7 +246,8 @@ function App() {
   }, /*#__PURE__*/React.createElement(IOSDevice, {
     width: 390,
     height: 844,
-    dark: darkMode
+    dark: darkMode,
+    bg: activeTheme.bg
   }, screens)));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
