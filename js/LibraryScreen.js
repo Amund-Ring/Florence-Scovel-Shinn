@@ -120,7 +120,7 @@ function LibraryItem({ quote, todayQuotes, onFavorite, onTap, onSetToday, onTria
 
   const startLongPress = (e) => {
     e.preventDefault();
-    longPressTimer.current = setTimeout(() => setShowTriageMenu(true), 2000);
+    longPressTimer.current = setTimeout(() => setShowTriageMenu(true), 1200);
   };
   const cancelLongPress = () => {
     clearTimeout(longPressTimer.current);
