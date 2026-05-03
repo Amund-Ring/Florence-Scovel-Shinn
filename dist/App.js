@@ -1,6 +1,7 @@
 /* ─── ROOT APP ─── */
 function App() {
   const [quotes, setQuotes] = usePersisted('fss_quotes', []);
+  const [quotesVersion, setQuotesVersion] = usePersisted('fss_version', 0);
   const [todaySlots, setTodaySlots] = usePersisted('fss_today', []);
   const [darkMode, setDarkMode] = usePersisted('fss_dark', false);
   const [tab, setTab] = React.useState('today');
@@ -13,20 +14,35 @@ function App() {
   const [loading, setLoading] = React.useState(quotes.length === 0);
   const activeTheme = darkMode ? THEMES.night : THEMES.ivory;
 
-  // First visit: fetch quotes.json and pick today's slots.
-  // Subsequent visits: localStorage already has everything, skip fetch.
+  // Always fetch quotes.json to check the version number.
+  // If the version matches what's stored, use localStorage as-is.
+  // If it differs (quotes edited/added/removed), merge: update quote content
+  // but preserve user fields (is_favorite, triage, times_shown, last_shown).
   React.useEffect(() => {
-    if (quotes.length > 0 && todaySlots.length > 0) {
-      setLoading(false);
-      return;
-    }
     fetch('./quotes.json').then(r => r.json()).then(data => {
-      const qs = data.quotes;
-      setQuotes(qs);
+      const newVersion = data.version ?? 1;
+      if (quotes.length > 0 && quotesVersion === newVersion) {
+        setLoading(false);
+        return;
+      }
+      const storedMap = Object.fromEntries(quotes.map(q => [q.id, q]));
+      const merged = data.quotes.map(q => {
+        const stored = storedMap[q.id];
+        if (!stored) return q;
+        return {
+          ...q,
+          is_favorite: stored.is_favorite ?? false,
+          triage: stored.triage ?? null,
+          times_shown: stored.times_shown ?? 0,
+          last_shown: stored.last_shown ?? null
+        };
+      });
+      setQuotes(merged);
+      setQuotesVersion(newVersion);
       if (todaySlots.length === 0) {
-        const s1 = pickQuote(qs, []);
-        const s2 = pickQuote(qs, [s1.id]);
-        const s3 = pickQuote(qs, [s1.id, s2.id]);
+        const s1 = pickQuote(merged, []);
+        const s2 = pickQuote(merged, [s1.id]);
+        const s3 = pickQuote(merged, [s1.id, s2.id]);
         setTodaySlots([{
           id: s1.id,
           locked: false
@@ -37,6 +53,21 @@ function App() {
           id: s3.id,
           locked: false
         }]);
+      } else {
+        // Replace any today slots whose quote was removed from the list
+        const mergedIds = new Set(merged.map(q => q.id));
+        if (todaySlots.some(s => !mergedIds.has(s.id))) {
+          const valid = todaySlots.filter(s => mergedIds.has(s.id));
+          const newSlots = [...valid];
+          while (newSlots.length < 3) {
+            const q = pickQuote(merged, newSlots.map(s => s.id));
+            newSlots.push({
+              id: q.id,
+              locked: false
+            });
+          }
+          setTodaySlots(newSlots);
+        }
       }
       setLoading(false);
     });
