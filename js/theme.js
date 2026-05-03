@@ -68,11 +68,10 @@ function makeS(t) {
       minHeight: 0,
     },
     tabBar: {
-      boxSizing: 'border-box',
-      height: 'calc(60px + env(safe-area-inset-bottom))',
       borderTop: `1px solid ${t.border}`,
       display: 'flex', background: t.bg,
       paddingBottom: 'env(safe-area-inset-bottom)',
+      height: 'calc(60px + env(safe-area-inset-bottom))',
       transition: 'background 0.3s',
     },
     tab: (active) => ({
