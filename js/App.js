@@ -10,27 +10,28 @@ function App() {
   const [slotPicker, setSlotPicker] = React.useState(null);
   const [isMobile, setIsMobile]     = React.useState(window.innerWidth <= 600);
 
-  // Still loading only if we have no quotes yet (first visit)
-  const [loading, setLoading] = React.useState(quotes.length === 0);
+  const [loading, setLoading] = React.useState(true);
 
   const activeTheme = darkMode ? THEMES.night : THEMES.ivory;
 
-  // First visit: fetch quotes.json and pick today's slots.
-  // Subsequent visits: localStorage already has everything, skip fetch.
+  // Always fetch quotes.json on load and merge with stored user data
+  // (is_favorite, triage, times_shown, last_shown), so quote edits in
+  // the JSON are reflected immediately on every reload.
   React.useEffect(() => {
-    if (quotes.length > 0 && todaySlots.length > 0) {
-      setLoading(false);
-      return;
-    }
     fetch('./quotes.json')
       .then(r => r.json())
       .then(data => {
-        const qs = data.quotes;
-        setQuotes(qs);
+        const storedMap = Object.fromEntries(quotes.map(q => [q.id, q]));
+        const merged = data.quotes.map(q => {
+          const s = storedMap[q.id];
+          if (!s) return q;
+          return { ...q, is_favorite: s.is_favorite ?? false, triage: s.triage ?? null, times_shown: s.times_shown ?? 0, last_shown: s.last_shown ?? null };
+        });
+        setQuotes(merged);
         if (todaySlots.length === 0) {
-          const s1 = pickQuote(qs, []);
-          const s2 = pickQuote(qs, [s1.id]);
-          const s3 = pickQuote(qs, [s1.id, s2.id]);
+          const s1 = pickQuote(merged, []);
+          const s2 = pickQuote(merged, [s1.id]);
+          const s3 = pickQuote(merged, [s1.id, s2.id]);
           setTodaySlots([
             { id: s1.id, locked: false },
             { id: s2.id, locked: false },
