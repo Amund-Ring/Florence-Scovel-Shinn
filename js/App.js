@@ -228,7 +228,6 @@ function App() {
         <div style={{
           position: 'fixed', inset: 0,
           paddingTop: 'env(safe-area-inset-top)',
-          paddingBottom: 'env(safe-area-inset-bottom)',
           background: activeTheme.bg,
           display: 'flex', flexDirection: 'column',
           transition: 'background 0.3s',
