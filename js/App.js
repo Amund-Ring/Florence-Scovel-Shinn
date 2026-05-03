@@ -91,10 +91,6 @@ function App() {
     setQuotes(qs => qs.map(q => q.id === qId ? { ...q, is_favorite: !q.is_favorite } : q));
   };
 
-  const handleTriage = (qId, status) => {
-    setQuotes(qs => qs.map(q => q.id === qId ? { ...q, triage: q.triage === status ? null : status } : q));
-  };
-
   const handleAssignSlot = (slotIdx) => {
     if (!slotPicker) return;
     setTodaySlots(slots => slots.map((s, i) => i === slotIdx ? { ...s, id: slotPicker.id } : s));
@@ -139,15 +135,13 @@ function App() {
         {!loading && tab === 'library' && (
           <LibraryScreen allQuotes={quotes} todayQuotes={todaySlots}
             onFavorite={handleFavorite}
-            onSetToday={(q) => setSlotPicker(q)}
-            onTriage={handleTriage} />
+            onSetToday={(q) => setSlotPicker(q)} />
         )}
         {!loading && tab === 'favorites' && (
           <FavoritesScreen allQuotes={quotes} todayQuotes={todaySlots}
             onFavorite={handleFavorite}
             onSetToday={(q) => setSlotPicker(q)}
-            onFocus={openFavFocus}
-            onTriage={handleTriage} />
+            onFocus={openFavFocus} />
         )}
         {focusMode && (
           <FocusMode quotes={focusMode.quotes} startIdx={focusMode.startIdx}

@@ -112,62 +112,26 @@ function ControlsPanel({ activeCat, onCat, activeSort, onSort, sortOpts }) {
 }
 
 /* ─── LIBRARY ITEM (shared with FavoritesScreen) ─── */
-function LibraryItem({ quote, todayQuotes, onFavorite, onTap, onSetToday, onTriage, isLast }) {
+function LibraryItem({ quote, todayQuotes, onFavorite, onTap, onSetToday, isLast }) {
   const t = useTheme();
   const col = getColor(quote.category);
-  const [showTriageMenu, setShowTriageMenu] = React.useState(false);
-  const longPressTimer = React.useRef(null);
-
-  const startLongPress = (e) => {
-    e.preventDefault();
-    longPressTimer.current = setTimeout(() => setShowTriageMenu(true), 1500);
-  };
-  const cancelLongPress = () => {
-    clearTimeout(longPressTimer.current);
-    longPressTimer.current = null;
-  };
-  const handleTriageSelect = (status) => {
-    setShowTriageMenu(false);
-    onTriage?.(quote.id, status);
-  };
-
-  const isRemove = quote.triage === 'remove';
-  const isEdit   = quote.triage === 'edit';
-  const isTriaged = isRemove || isEdit;
-  const triageAccent = isRemove ? 'oklch(52% 0.16 20)' : 'oklch(58% 0.13 60)';
-
-  const quoteTextStyle = {
-    fontFamily: "'DM Serif Display', serif", fontSize: 14.5, lineHeight: 1.55,
-    fontWeight: 400, textWrap: 'pretty', marginBottom: 5,
-    color: isRemove ? triageAccent : t.textPrimary,
-    textDecoration: isRemove ? 'line-through' : 'none',
-    opacity: isTriaged ? 0.65 : 1,
-    transition: 'all 0.2s',
-  };
-
+  const isInToday = todayQuotes.some(tq => tq.id === quote.id);
   return (
     <div style={{
       display: 'flex', alignItems: 'flex-start', gap: 12,
       padding: '14px 0',
       borderBottom: isLast ? 'none' : `1px solid ${t.borderSub}`,
       cursor: onTap ? 'pointer' : 'default',
-    }} onClick={showTriageMenu ? () => setShowTriageMenu(false) : (onTap || undefined)}>
-      <div style={{ width: 3, background: isTriaged ? triageAccent : col.accent, borderRadius: 2, alignSelf: 'stretch', minHeight: 32, flexShrink: 0, marginTop: 3, transition: 'background 0.2s' }} />
+    }} onClick={onTap || undefined}>
+      <div style={{ width: 3, background: col.accent, borderRadius: 2, alignSelf: 'stretch', minHeight: 32, flexShrink: 0, marginTop: 3 }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={quoteTextStyle}>{quote.quote}</p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+        <p style={{ fontFamily: "'DM Serif Display', serif", fontSize: 14.5, lineHeight: 1.55, color: t.textPrimary, fontWeight: 400, textWrap: 'pretty', marginBottom: 5 }}>{quote.quote}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <CatPill category={quote.category} small />
           <span style={{ fontSize: 10, color: t.textMuted }}>· {quote.book_title}</span>
-          {isTriaged && (
-            <span style={{
-              fontSize: 9, fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase',
-              color: triageAccent, padding: '1px 5px', borderRadius: 4,
-              border: `1px solid ${triageAccent}`, opacity: 0.85,
-            }}>{isRemove ? 'Remove' : 'Edit'}</span>
-          )}
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0, paddingTop: 2, position: 'relative' }} onClick={e => e.stopPropagation()}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0, paddingTop: 2 }} onClick={e => e.stopPropagation()}>
         <button onClick={onFavorite} style={{
           width: 30, height: 30, borderRadius: 8,
           border: `1px solid ${quote.is_favorite ? 'oklch(62% 0.14 20)' : t.btnBorder}`,
@@ -176,53 +140,15 @@ function LibraryItem({ quote, todayQuotes, onFavorite, onTap, onSetToday, onTria
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
           transition: 'all 0.15s',
         }}><IconHeart filled={quote.is_favorite} size={HEART_SIZE} /></button>
-        <button
-          onPointerDown={startLongPress}
-          onPointerUp={cancelLongPress}
-          onPointerLeave={cancelLongPress}
-          onContextMenu={e => { e.preventDefault(); cancelLongPress(); }}
-          onClick={() => { if (!showTriageMenu) onSetToday(); }}
-          title="Add to Today · hold 3s to triage"
-          style={{
-            width: 30, height: 30, borderRadius: 8,
-            border: `1px solid ${isTriaged ? triageAccent : t.btnBorder}`,
-            background: isTriaged
-              ? (t.dark ? `color-mix(in oklch, ${triageAccent} 12%, ${t.bgCard})` : `color-mix(in oklch, ${triageAccent} 8%, ${t.bgCard})`)
-              : t.bgCard,
-            color: isTriaged ? triageAccent : t.textSecondary,
-            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 13, fontWeight: 600, fontFamily: "'DM Sans', sans-serif",
-            transition: 'all 0.2s',
-          }}
-        >+</button>
-        {showTriageMenu && (
-          <div style={{
-            position: 'absolute', right: 36, top: 0,
-            background: t.bgCard, border: `1px solid ${t.border}`,
-            borderRadius: 10, boxShadow: '0 4px 20px rgba(0,0,0,0.18)',
-            zIndex: 20, minWidth: 170, overflow: 'hidden',
-          }}>
-            <button onClick={() => handleTriageSelect('remove')} style={{
-              display: 'block', width: '100%', textAlign: 'left',
-              padding: '11px 14px', fontFamily: "'DM Sans', sans-serif", fontSize: 13,
-              border: 'none', borderBottom: `1px solid ${t.border}`,
-              background: isRemove ? `color-mix(in oklch, oklch(52% 0.16 20) 8%, ${t.bgCard})` : 'none',
-              color: 'oklch(52% 0.16 20)', cursor: 'pointer', fontWeight: isRemove ? 600 : 400,
-            }}>{isRemove ? '✕ Clear removal flag' : '✕ Mark for removal'}</button>
-            <button onClick={() => handleTriageSelect('edit')} style={{
-              display: 'block', width: '100%', textAlign: 'left',
-              padding: '11px 14px', fontFamily: "'DM Sans', sans-serif", fontSize: 13,
-              border: 'none', borderBottom: `1px solid ${t.border}`,
-              background: isEdit ? `color-mix(in oklch, oklch(58% 0.13 60) 8%, ${t.bgCard})` : 'none',
-              color: 'oklch(58% 0.13 60)', cursor: 'pointer', fontWeight: isEdit ? 600 : 400,
-            }}>{isEdit ? '✎ Clear edit flag' : '✎ Mark for edit'}</button>
-            <button onClick={() => setShowTriageMenu(false)} style={{
-              display: 'block', width: '100%', textAlign: 'left',
-              padding: '11px 14px', fontFamily: "'DM Sans', sans-serif", fontSize: 13,
-              border: 'none', background: 'none', color: t.textSecondary, cursor: 'pointer',
-            }}>Cancel</button>
-          </div>
-        )}
+        <button onClick={onSetToday} title="Add to Today" style={{
+          width: 30, height: 30, borderRadius: 8,
+          border: `1px solid ${t.btnBorder}`,
+          background: t.bgCard,
+          color: t.textSecondary,
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 13, fontWeight: 600, fontFamily: "'DM Sans', sans-serif",
+          transition: 'all 0.15s',
+        }}>+</button>
       </div>
     </div>
   );
@@ -237,7 +163,7 @@ function CatSectionHeader({ cat }) {
 }
 
 /* ─── LIBRARY SCREEN ─── */
-function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday, onTriage }) {
+function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday }) {
   const t = useTheme();
   const S = makeS(t);
   const [activeCat, setActiveCat] = usePersisted('fss_lib_cat', 'All');
@@ -283,7 +209,6 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
                 <LibraryItem key={quote.id} quote={quote} todayQuotes={todayQuotes}
                   onFavorite={() => onFavorite(quote.id)}
                   onSetToday={() => onSetToday(quote)}
-                  onTriage={onTriage}
                   isLast={i === items.length - 1} />
               ))}
             </div>
@@ -293,7 +218,6 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
             <LibraryItem key={quote.id} quote={quote} todayQuotes={todayQuotes}
               onFavorite={() => onFavorite(quote.id)}
               onSetToday={() => onSetToday(quote)}
-              onTriage={onTriage}
               isLast={i === filtered.length - 1} />
           ))
         )}
