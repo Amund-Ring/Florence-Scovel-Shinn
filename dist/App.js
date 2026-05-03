@@ -1,7 +1,7 @@
 /* ─── ROOT APP ─── */
 function App() {
-  const [rawQuotes, setRawQuotes] = React.useState([]);
-  const [userData, setUserData] = usePersisted('fss_userdata', {});
+  const [quotes, setQuotes] = usePersisted('fss_quotes', []);
+  const [quotesVersion, setQuotesVersion] = usePersisted('fss_version', 0);
   const [todaySlots, setTodaySlots] = usePersisted('fss_today', []);
   const [darkMode, setDarkMode] = usePersisted('fss_dark', false);
   const [tab, setTab] = React.useState('today');
@@ -9,31 +9,36 @@ function App() {
   const [focusBg, setFocusBg] = React.useState(null);
   const [slotPicker, setSlotPicker] = React.useState(null);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 600);
-  const [loading, setLoading] = React.useState(true);
+
+  // Still loading only if we have no quotes yet (first visit)
+  const [loading, setLoading] = React.useState(quotes.length === 0);
   const activeTheme = darkMode ? THEMES.night : THEMES.ivory;
 
-  // Merge raw quotes from JSON with persisted user data
-  const quotes = rawQuotes.map(q => ({
-    ...q,
-    is_favorite: userData[q.id]?.is_favorite ?? false,
-    triage: userData[q.id]?.triage ?? null,
-    times_shown: userData[q.id]?.times_shown ?? 0,
-    last_shown: userData[q.id]?.last_shown ?? null
-  }));
-
-  // Fetch quotes.json on every load — it's small and browser-cached.
-  // localStorage stores only user data (favorites, triage, times_shown).
+  // Always fetch quotes.json to check the version number.
+  // If the version matches what's stored, use localStorage as-is.
+  // If it differs (quotes edited/added/removed), merge: update quote content
+  // but preserve user fields (is_favorite, triage, times_shown, last_shown).
   React.useEffect(() => {
-    // Clean up old storage keys from the previous full-quotes approach
-    localStorage.removeItem('fss_quotes');
-    localStorage.removeItem('fss_version');
     fetch('./quotes.json').then(r => r.json()).then(data => {
-      setRawQuotes(data.quotes);
-      const merged = data.quotes.map(q => ({
-        ...q,
-        times_shown: userData[q.id]?.times_shown ?? 0,
-        last_shown: userData[q.id]?.last_shown ?? null
-      }));
+      const newVersion = data.version ?? 1;
+      if (quotes.length > 0 && quotesVersion === newVersion) {
+        setLoading(false);
+        return;
+      }
+      const storedMap = Object.fromEntries(quotes.map(q => [q.id, q]));
+      const merged = data.quotes.map(q => {
+        const stored = storedMap[q.id];
+        if (!stored) return q;
+        return {
+          ...q,
+          is_favorite: stored.is_favorite ?? false,
+          triage: stored.triage ?? null,
+          times_shown: stored.times_shown ?? 0,
+          last_shown: stored.last_shown ?? null
+        };
+      });
+      setQuotes(merged);
+      setQuotesVersion(newVersion);
       if (todaySlots.length === 0) {
         const s1 = pickQuote(merged, []);
         const s2 = pickQuote(merged, [s1.id]);
@@ -49,10 +54,10 @@ function App() {
           locked: false
         }]);
       } else {
-        // Replace any today slots whose quote was removed from the JSON
-        const ids = new Set(data.quotes.map(q => q.id));
-        if (todaySlots.some(s => !ids.has(s.id))) {
-          const valid = todaySlots.filter(s => ids.has(s.id));
+        // Replace any today slots whose quote was removed from the list
+        const mergedIds = new Set(merged.map(q => q.id));
+        if (todaySlots.some(s => !mergedIds.has(s.id))) {
+          const valid = todaySlots.filter(s => mergedIds.has(s.id));
           const newSlots = [...valid];
           while (newSlots.length < 3) {
             const q = pickQuote(merged, newSlots.map(s => s.id));
@@ -89,18 +94,6 @@ function App() {
     return () => window.removeEventListener('resize', handler);
   }, []);
 
-  /* ── User data helper ── */
-  const updateShown = qId => {
-    setUserData(ud => ({
-      ...ud,
-      [qId]: {
-        ...(ud[qId] || {}),
-        times_shown: (ud[qId]?.times_shown ?? 0) + 1,
-        last_shown: new Date().toDateString()
-      }
-    }));
-  };
-
   /* ── Quote slot handlers ── */
   const handleLock = slotIdx => {
     setTodaySlots(slots => slots.map((s, i) => i === slotIdx ? {
@@ -115,12 +108,15 @@ function App() {
       ...s,
       id: newQ.id
     } : s));
-    updateShown(newQ.id);
+    setQuotes(qs => qs.map(q => q.id === newQ.id ? {
+      ...q,
+      times_shown: q.times_shown + 1,
+      last_shown: new Date().toDateString()
+    } : q));
   };
   const handleRefreshAll = () => {
     const newSlots = [...todaySlots];
     const lockedIds = todaySlots.filter(s => s.locked).map(s => s.id);
-    const shownIds = [];
     for (let i = 0; i < newSlots.length; i++) {
       if (newSlots[i].locked) continue;
       const alreadyPicked = newSlots.slice(0, i).filter((_, j) => !todaySlots[j].locked).map(s => s.id);
@@ -129,40 +125,25 @@ function App() {
         ...newSlots[i],
         id: newQ.id
       };
-      shownIds.push(newQ.id);
+      setQuotes(qs => qs.map(q => q.id === newQ.id ? {
+        ...q,
+        times_shown: q.times_shown + 1,
+        last_shown: new Date().toDateString()
+      } : q));
     }
     setTodaySlots(newSlots);
-    setUserData(ud => {
-      const next = {
-        ...ud
-      };
-      for (const qId of shownIds) {
-        next[qId] = {
-          ...(ud[qId] || {}),
-          times_shown: (ud[qId]?.times_shown ?? 0) + 1,
-          last_shown: new Date().toDateString()
-        };
-      }
-      return next;
-    });
   };
   const handleFavorite = qId => {
-    setUserData(ud => ({
-      ...ud,
-      [qId]: {
-        ...(ud[qId] || {}),
-        is_favorite: !(ud[qId]?.is_favorite ?? false)
-      }
-    }));
+    setQuotes(qs => qs.map(q => q.id === qId ? {
+      ...q,
+      is_favorite: !q.is_favorite
+    } : q));
   };
   const handleTriage = (qId, status) => {
-    setUserData(ud => ({
-      ...ud,
-      [qId]: {
-        ...(ud[qId] || {}),
-        triage: ud[qId]?.triage === status ? null : status
-      }
-    }));
+    setQuotes(qs => qs.map(q => q.id === qId ? {
+      ...q,
+      triage: q.triage === status ? null : status
+    } : q));
   };
   const handleAssignSlot = slotIdx => {
     if (!slotPicker) return;
@@ -170,7 +151,11 @@ function App() {
       ...s,
       id: slotPicker.id
     } : s));
-    updateShown(slotPicker.id);
+    setQuotes(qs => qs.map(q => q.id === slotPicker.id ? {
+      ...q,
+      times_shown: q.times_shown + 1,
+      last_shown: new Date().toDateString()
+    } : q));
     setSlotPicker(null);
   };
 
