@@ -137,13 +137,6 @@ function App() {
     }));
   };
 
-  const handleTriage = (qId, status) => {
-    setUserData(ud => ({
-      ...ud,
-      [qId]: { ...(ud[qId] || {}), triage: ud[qId]?.triage === status ? null : status },
-    }));
-  };
-
   const handleAssignSlot = (slotIdx) => {
     if (!slotPicker) return;
     setTodaySlots(slots => slots.map((s, i) => i === slotIdx ? { ...s, id: slotPicker.id } : s));
@@ -188,15 +181,13 @@ function App() {
         {!loading && tab === 'library' && (
           <LibraryScreen allQuotes={quotes} todayQuotes={todaySlots}
             onFavorite={handleFavorite}
-            onSetToday={(q) => setSlotPicker(q)}
-            onTriage={handleTriage} />
+            onSetToday={(q) => setSlotPicker(q)} />
         )}
         {!loading && tab === 'favorites' && (
           <FavoritesScreen allQuotes={quotes} todayQuotes={todaySlots}
             onFavorite={handleFavorite}
             onSetToday={(q) => setSlotPicker(q)}
-            onFocus={openFavFocus}
-            onTriage={handleTriage} />
+            onFocus={openFavFocus} />
         )}
         {focusMode && (
           <FocusMode quotes={focusMode.quotes} startIdx={focusMode.startIdx}
