@@ -17,6 +17,15 @@ const SORT_OPTS_FAVORITES = [
 
 const CAT_OPTS = ALL_CATS.map(c => ({ id: c, label: c }));
 
+const BOOK_SHORT = {
+  'The Game of Life and How to Play It': 'The Game',
+  'Your Word Is Your Wand':              'Your Word',
+  'The Secret Door to Success':          'The Secret Door',
+  'The Power of the Spoken Word':        'The Spoken Word',
+};
+const ALL_BOOKS = ['All', ...Object.keys(BOOK_SHORT)];
+const BOOK_OPTS = ALL_BOOKS.map(b => ({ id: b, label: b === 'All' ? 'All' : BOOK_SHORT[b] }));
+
 /* ─── KEYBOARD HEIGHT HOOK ─── */
 function useKeyboardHeight() {
   const [kbHeight, setKbHeight] = React.useState(0);

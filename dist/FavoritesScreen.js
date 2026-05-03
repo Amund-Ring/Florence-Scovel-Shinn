@@ -130,6 +130,7 @@ function FavoritesScreen({
   const S = makeS(t);
   const [sort, setSort] = usePersisted('fss_fav_sort', 'date');
   const [activeCat, setActiveCat] = usePersisted('fss_fav_cat', 'All');
+  const [activeBook, setActiveBook] = usePersisted('fss_fav_book', 'All');
   const [showControls, setShowControls] = React.useState(false);
   const [showSearch, setShowSearch] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -142,8 +143,9 @@ function FavoritesScreen({
   };
   const favs = allQuotes.filter(q => q.is_favorite);
   const triaged = allQuotes.filter(q => q.triage === 'remove' || q.triage === 'edit');
-  const hasActive = activeCat !== 'All' || sort !== 'date';
+  const hasActive = activeCat !== 'All' || activeBook !== 'All' || sort !== 'date';
   let displayed = activeCat === 'All' ? favs : favs.filter(q => q.category === activeCat);
+  if (activeBook !== 'All') displayed = displayed.filter(q => q.book_title === activeBook);
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
     displayed = displayed.filter(quote => quote.quote.toLowerCase().includes(q));
@@ -224,6 +226,8 @@ function FavoritesScreen({
   }), showControls && /*#__PURE__*/React.createElement(ControlsPanel, {
     activeCat: activeCat,
     onCat: setActiveCat,
+    activeBook: activeBook,
+    onBook: setActiveBook,
     activeSort: sort,
     onSort: setSort,
     sortOpts: SORT_OPTS_FAVORITES

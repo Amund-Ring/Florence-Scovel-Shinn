@@ -100,11 +100,13 @@ function ScrollChipRow({ label, options, active, onSelect }) {
 }
 
 // sortOpts prop lets Library and Favorites pass different label sets
-function ControlsPanel({ activeCat, onCat, activeSort, onSort, sortOpts }) {
+function ControlsPanel({ activeCat, onCat, activeBook, onBook, activeSort, onSort, sortOpts }) {
   const t = useTheme();
   return (
     <div style={{ borderBottom: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column' }}>
       <ScrollChipRow label="Category" options={CAT_OPTS} active={activeCat} onSelect={onCat} />
+      <div style={{ height: 1, background: t.border }} />
+      <ScrollChipRow label="Book" options={BOOK_OPTS} active={activeBook} onSelect={onBook} />
       <div style={{ height: 1, background: t.border }} />
       <ScrollChipRow label="Sort by" options={sortOpts} active={activeSort} onSelect={onSort} />
     </div>
@@ -240,7 +242,8 @@ function CatSectionHeader({ cat }) {
 function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday, onTriage }) {
   const t = useTheme();
   const S = makeS(t);
-  const [activeCat, setActiveCat] = usePersisted('fss_lib_cat', 'All');
+  const [activeCat, setActiveCat]   = usePersisted('fss_lib_cat', 'All');
+  const [activeBook, setActiveBook] = usePersisted('fss_lib_book', 'All');
   const [activeSort, setActiveSort] = usePersisted('fss_lib_sort', 'date');
   const [showControls, setShowControls] = React.useState(false);
   const [showSearch, setShowSearch] = React.useState(false);
@@ -252,12 +255,13 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
   };
 
   let filtered = activeCat === 'All' ? allQuotes : allQuotes.filter(q => q.category === activeCat);
+  if (activeBook !== 'All') filtered = filtered.filter(q => q.book_title === activeBook);
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
     filtered = filtered.filter(quote => quote.quote.toLowerCase().includes(q));
   }
   filtered = sortQuotes(filtered, activeSort, allQuotes);
-  const hasActive = activeCat !== 'All' || activeSort !== 'date';
+  const hasActive = activeCat !== 'All' || activeBook !== 'All' || activeSort !== 'date';
 
   const grouped = activeSort === 'cat'
     ? Object.entries(filtered.reduce((acc, q) => { (acc[q.category] = acc[q.category] || []).push(q); return acc; }, {}))
@@ -273,7 +277,7 @@ function LibraryScreen({ allQuotes, todayQuotes, onFavorite, onFocus, onSetToday
         </div>
       </div>
       {showSearch && <SearchBar value={searchQuery} onChange={setSearchQuery} />}
-      {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeSort={activeSort} onSort={setActiveSort} sortOpts={SORT_OPTS_LIBRARY} />}
+      {showControls && <ControlsPanel activeCat={activeCat} onCat={setActiveCat} activeBook={activeBook} onBook={setActiveBook} activeSort={activeSort} onSort={setActiveSort} sortOpts={SORT_OPTS_LIBRARY} />}
       <div className="list-scroll" style={{ ...S.body, gap: 0, padding: '0 13px 0 16px', paddingBottom: kbHeight > 0 ? kbHeight : 8 }}>
         {grouped ? (
           grouped.map(([cat, items]) => (

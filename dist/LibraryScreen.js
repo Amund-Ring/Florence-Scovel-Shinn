@@ -176,6 +176,8 @@ function ScrollChipRow({
 function ControlsPanel({
   activeCat,
   onCat,
+  activeBook,
+  onBook,
   activeSort,
   onSort,
   sortOpts
@@ -192,6 +194,16 @@ function ControlsPanel({
     options: CAT_OPTS,
     active: activeCat,
     onSelect: onCat
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 1,
+      background: t.border
+    }
+  }), /*#__PURE__*/React.createElement(ScrollChipRow, {
+    label: "Book",
+    options: BOOK_OPTS,
+    active: activeBook,
+    onSelect: onBook
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       height: 1,
@@ -452,6 +464,7 @@ function LibraryScreen({
   const t = useTheme();
   const S = makeS(t);
   const [activeCat, setActiveCat] = usePersisted('fss_lib_cat', 'All');
+  const [activeBook, setActiveBook] = usePersisted('fss_lib_book', 'All');
   const [activeSort, setActiveSort] = usePersisted('fss_lib_sort', 'date');
   const [showControls, setShowControls] = React.useState(false);
   const [showSearch, setShowSearch] = React.useState(false);
@@ -464,12 +477,13 @@ function LibraryScreen({
     });
   };
   let filtered = activeCat === 'All' ? allQuotes : allQuotes.filter(q => q.category === activeCat);
+  if (activeBook !== 'All') filtered = filtered.filter(q => q.book_title === activeBook);
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
     filtered = filtered.filter(quote => quote.quote.toLowerCase().includes(q));
   }
   filtered = sortQuotes(filtered, activeSort, allQuotes);
-  const hasActive = activeCat !== 'All' || activeSort !== 'date';
+  const hasActive = activeCat !== 'All' || activeBook !== 'All' || activeSort !== 'date';
   const grouped = activeSort === 'cat' ? Object.entries(filtered.reduce((acc, q) => {
     (acc[q.category] = acc[q.category] || []).push(q);
     return acc;
@@ -497,6 +511,8 @@ function LibraryScreen({
   }), showControls && /*#__PURE__*/React.createElement(ControlsPanel, {
     activeCat: activeCat,
     onCat: setActiveCat,
+    activeBook: activeBook,
+    onBook: setActiveBook,
     activeSort: activeSort,
     onSort: setActiveSort,
     sortOpts: SORT_OPTS_LIBRARY
