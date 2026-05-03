@@ -46,9 +46,8 @@ body {
   min-height: 100vh;
 }
 @media (max-width: 600px) {
-  html { overflow: hidden; height: 100%; }
-  body { position: fixed; overflow: hidden; width: 100%; height: 100%; background: oklch(98% 0.008 60); }
-  #root { width: 100%; height: 100%; }
+  body { background: oklch(98% 0.008 60); min-height: 100dvh; }
+  #root { min-height: 100dvh; }
 }
 </style>
 </head>
