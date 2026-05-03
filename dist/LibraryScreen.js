@@ -200,20 +200,20 @@ function ControlsPanel({
       background: t.border
     }
   }), /*#__PURE__*/React.createElement(ScrollChipRow, {
-    label: "Book",
-    options: BOOK_OPTS,
-    active: activeBook,
-    onSelect: onBook
+    label: "Sort by",
+    options: sortOpts,
+    active: activeSort,
+    onSelect: onSort
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       height: 1,
       background: t.border
     }
   }), /*#__PURE__*/React.createElement(ScrollChipRow, {
-    label: "Sort by",
-    options: sortOpts,
-    active: activeSort,
-    onSelect: onSort
+    label: "Book",
+    options: BOOK_OPTS,
+    active: activeBook,
+    onSelect: onBook
   }));
 }
 

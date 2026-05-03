@@ -106,9 +106,9 @@ function ControlsPanel({ activeCat, onCat, activeBook, onBook, activeSort, onSor
     <div style={{ borderBottom: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column' }}>
       <ScrollChipRow label="Category" options={CAT_OPTS} active={activeCat} onSelect={onCat} />
       <div style={{ height: 1, background: t.border }} />
-      <ScrollChipRow label="Book" options={BOOK_OPTS} active={activeBook} onSelect={onBook} />
-      <div style={{ height: 1, background: t.border }} />
       <ScrollChipRow label="Sort by" options={sortOpts} active={activeSort} onSelect={onSort} />
+      <div style={{ height: 1, background: t.border }} />
+      <ScrollChipRow label="Book" options={BOOK_OPTS} active={activeBook} onSelect={onBook} />
     </div>
   );
 }

@@ -31,8 +31,8 @@ const CAT_OPTS = ALL_CATS.map(c => ({
 const BOOK_SHORT = {
   'The Game of Life and How to Play It': 'The Game',
   'Your Word Is Your Wand': 'Your Word',
-  'The Secret Door to Success': 'The Secret Door',
-  'The Power of the Spoken Word': 'The Spoken Word'
+  'The Secret Door to Success': 'Secret Door',
+  'The Power of the Spoken Word': 'Spoken Word'
 };
 const ALL_BOOKS = ['All', ...Object.keys(BOOK_SHORT)];
 const BOOK_OPTS = ALL_BOOKS.map(b => ({
