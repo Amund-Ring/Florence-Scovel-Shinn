@@ -93,6 +93,7 @@ function TodayCard({
       transition: 'all 0.15s'
     }
   }, locked ? /*#__PURE__*/React.createElement(IconLock, null) : /*#__PURE__*/React.createElement(IconUnlock, null)))), /*#__PURE__*/React.createElement("p", {
+    className: "selectable",
     style: {
       fontFamily: "'DM Serif Display', serif",
       fontSize: 16,

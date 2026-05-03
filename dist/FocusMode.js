@@ -131,7 +131,6 @@ function FocusMode({
       marginBottom: 24
     }
   }, q.category), /*#__PURE__*/React.createElement("p", {
-    className: "selectable",
     style: {
       fontFamily: "'DM Serif Display', serif",
       fontSize: quoteFontSize,
@@ -142,7 +141,6 @@ function FocusMode({
       marginBottom: 28
     }
   }, "\u201C", q.quote, "\u201D"), /*#__PURE__*/React.createElement("p", {
-    className: "selectable",
     style: {
       fontSize: 13,
       color: t.textSecondary,
@@ -150,7 +148,6 @@ function FocusMode({
       marginBottom: 4
     }
   }, q.book_title), /*#__PURE__*/React.createElement("p", {
-    className: "selectable",
     style: {
       fontSize: 12,
       color: t.textMuted,

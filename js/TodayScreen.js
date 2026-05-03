@@ -45,7 +45,7 @@ function TodayCard({ quote, locked, onLock, onRefresh, onTap }) {
             </button>
           </div>
         </div>
-        <p style={{
+        <p className="selectable" style={{
           fontFamily: "'DM Serif Display', serif",
           fontSize: 16, lineHeight: 1.6,
           color: t.textPrimary, fontWeight: 400, textWrap: 'pretty',

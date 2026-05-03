@@ -79,7 +79,7 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes, isMobile,
           }}>{q.category}</p>
 
           {/* Quote text */}
-          <p className="selectable" style={{
+          <p style={{
             fontFamily: "'DM Serif Display', serif",
             fontSize: quoteFontSize, lineHeight: 1.65,
             color: t.textPrimary, fontWeight: 400,
@@ -90,8 +90,8 @@ function FocusMode({ quotes, startIdx, onClose, onFavorite, allQuotes, isMobile,
           </p>
 
           {/* Book title + chapter — both italic, muted */}
-          <p className="selectable" style={{ fontSize: 13, color: t.textSecondary, fontStyle: 'italic', marginBottom: 4 }}>{q.book_title}</p>
-          <p className="selectable" style={{ fontSize: 12, color: t.textMuted, fontStyle: 'italic' }}>{q.chapter_title}</p>
+          <p style={{ fontSize: 13, color: t.textSecondary, fontStyle: 'italic', marginBottom: 4 }}>{q.book_title}</p>
+          <p style={{ fontSize: 12, color: t.textMuted, fontStyle: 'italic' }}>{q.chapter_title}</p>
 
           {/* Navigation pills — only shown when there are fewer than 5 quotes */}
           {quotes.length < 5 && (
